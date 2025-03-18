@@ -24,12 +24,18 @@
     <ClCompile Include="Terminator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PortManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Terminator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
