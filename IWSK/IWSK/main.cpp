@@ -28,9 +28,16 @@ public:
         portManager.configureSpeed();
         portManager.configureFrame();
 
-        FlowControl flowControl;
+        std::string port;
+        std::cout << "Enter COM port (e.g., COM1, COM2): ";
+        std::cin >> port;
+
+        FlowControl flowControl(port);
         flowControl.setup();
-        flowControl.manualFlow();
+
+        if (flowControl.isManualMode()) {
+            flowControl.manualFlow();
+        }
 
         Terminator terminator;
         terminator.chooseTerminator();
