@@ -128,10 +128,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Ping.cpp" />
     <ClCompile Include="PortManager.cpp" />
     <ClCompile Include="Terminator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ping.h" />
     <ClInclude Include="PortManager.h" />
     <ClInclude Include="Terminator.h" />
   </ItemGroup>
