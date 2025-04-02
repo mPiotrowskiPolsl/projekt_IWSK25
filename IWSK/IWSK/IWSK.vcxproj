@@ -127,14 +127,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FlowControl.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Ping.cpp" />
     <ClCompile Include="PortManager.cpp" />
+    <ClCompile Include="Sender.cpp" />
     <ClCompile Include="Terminator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FlowControl.h" />
     <ClInclude Include="Ping.h" />
     <ClInclude Include="PortManager.h" />
+    <ClInclude Include="Sender.h" />
     <ClInclude Include="Terminator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
