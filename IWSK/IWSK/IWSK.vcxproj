@@ -131,6 +131,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Ping.cpp" />
     <ClCompile Include="PortManager.cpp" />
+    <ClCompile Include="Receiver.cpp" />
     <ClCompile Include="Sender.cpp" />
     <ClCompile Include="Terminator.cpp" />
   </ItemGroup>
@@ -138,6 +139,7 @@
     <ClInclude Include="FlowControl.h" />
     <ClInclude Include="Ping.h" />
     <ClInclude Include="PortManager.h" />
+    <ClInclude Include="Receiver.h" />
     <ClInclude Include="Sender.h" />
     <ClInclude Include="Terminator.h" />
   </ItemGroup>

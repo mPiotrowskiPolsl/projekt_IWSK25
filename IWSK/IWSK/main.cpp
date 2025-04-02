@@ -9,11 +9,11 @@
 #include "FlowControl.h"          // Osoba 2
 #include "Terminator.h"           // Osoba 3
 #include "Sender.h"               // Osoba 4
-#include "PingChecker.h"          // Osoba 5
+/*#include "PingChecker.h"          // Osoba 5
 #include "TextModeSender.h"       // Osoba 6
 #include "TextModeReceiver.h"     // Osoba 7
 #include "BinaryModeSender.h"     // Osoby 8, 9
-#include "BinaryModeReceiver.h"   // Osoby 10, 11
+#include "BinaryModeReceiver.h"   // Osoby 10, 11*/
 #include "Receiver.h"             // Osoba 12
 
 // G³ówna klasa aplikacji
@@ -39,19 +39,19 @@ public:
             flowControl.manualFlow();
         }
 
-        Terminator terminator;
+        /*Terminator terminator;
         terminator.chooseTerminator();
-
+        
         PingChecker ping;
         ping.checkConnection();
         ping.autoBaud();
 
         Sender sender;
         sender.send();
-
+        */
         Receiver receiver;
         receiver.receive();
-
+        /*
         TextModeSender textSender;
         textSender.sendText();
 
@@ -62,7 +62,7 @@ public:
         binarySender.sendBinary();
 
         BinaryModeReceiver binaryReceiver;
-        binaryReceiver.receiveBinary();
+        binaryReceiver.receiveBinary();*/
     }
 };
 
