@@ -134,6 +134,7 @@
     <ClCompile Include="Receiver.cpp" />
     <ClCompile Include="Sender.cpp" />
     <ClCompile Include="Terminator.cpp" />
+    <ClCompile Include="TextModeReceiver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FlowControl.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="Receiver.h" />
     <ClInclude Include="Sender.h" />
     <ClInclude Include="Terminator.h" />
+    <ClInclude Include="TextModeReceiver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

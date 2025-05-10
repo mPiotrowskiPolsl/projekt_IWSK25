@@ -4,19 +4,17 @@
 #include <chrono>
 #include <vector>
 
-// Pliki nag³ówkowe dla poszczególnych modu³ów
 #include "PortManager.h"          // Osoba 1
 #include "FlowControl.h"          // Osoba 2
 #include "Terminator.h"           // Osoba 3
 #include "Sender.h"               // Osoba 4
+#include "TextModeReceiver.h"     // Osoba 7
 /*#include "PingChecker.h"          // Osoba 5
 #include "TextModeSender.h"       // Osoba 6
-#include "TextModeReceiver.h"     // Osoba 7
 #include "BinaryModeSender.h"     // Osoby 8, 9
 #include "BinaryModeReceiver.h"   // Osoby 10, 11*/
 #include "Receiver.h"             // Osoba 12
 
-// G³ówna klasa aplikacji
 class SerialCommunicationApp {
 public:
     void run() {
@@ -39,24 +37,39 @@ public:
             flowControl.manualFlow();
         }
 
+        int choice;
+        std::cout << "\n=== Menu opcji ===" << std::endl;
+        std::cout << "1. Odbiór w trybie standardowym" << std::endl;
+        std::cout << "2. Odbiór w trybie tekstowym" << std::endl;
+        std::cout << "Wybierz opcjê: ";
+        std::cin >> choice;
+
+        if (choice == 1) {
+            // Standardowy odbiór
+            Receiver receiver;
+            receiver.receive();
+        }
+        else if (choice == 2) {
+            // Odbiór w trybie tekstowym
+            TextModeReceiver textReceiver;
+            textReceiver.receiveText();
+        }
+        else {
+            std::cout << "Nieprawid³owy wybór." << std::endl;
+        }
+
         /*Terminator terminator;
         terminator.chooseTerminator();
-        
+
         PingChecker ping;
         ping.checkConnection();
         ping.autoBaud();
 
         Sender sender;
         sender.send();
-        */
-        Receiver receiver;
-        receiver.receive();
-        /*
+
         TextModeSender textSender;
         textSender.sendText();
-
-        TextModeReceiver textReceiver;
-        textReceiver.receiveText();
 
         BinaryModeSender binarySender;
         binarySender.sendBinary();
