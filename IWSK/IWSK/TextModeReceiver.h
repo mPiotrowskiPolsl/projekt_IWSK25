@@ -1,9 +1,6 @@
 #pragma once
 #include <windows.h>
 #include <string>
-#include "PortManager.h"
-#include <iostream>
-#include <conio.h>  // dla _kbhit() i _getch()
 
 class TextModeReceiver {
 public:

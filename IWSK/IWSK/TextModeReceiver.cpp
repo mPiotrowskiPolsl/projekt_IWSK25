@@ -1,4 +1,7 @@
 #include "TextModeReceiver.h"
+#include "PortManager.h"
+#include <iostream>
+#include <conio.h>  // dla _kbhit() i _getch()
 
 TextModeReceiver::TextModeReceiver() {}
 
