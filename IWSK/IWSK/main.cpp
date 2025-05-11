@@ -9,10 +9,10 @@
 #include "Terminator.h"           // Osoba 3
 #include "Sender.h"               // Osoba 4
 #include "TextModeReceiver.h"     // Osoba 7
-/*#include "PingChecker.h"          // Osoba 5
-#include "TextModeSender.h"       // Osoba 6
+//#include "PingChecker.h"          // Osoba 5
+//#include "TextModeSender.h"       // Osoba 6
 #include "BinaryModeSender.h"     // Osoby 8, 9
-#include "BinaryModeReceiver.h"   // Osoby 10, 11*/
+//#include "BinaryModeReceiver.h"   // Osoby 10, 11
 #include "Receiver.h"             // Osoba 12
 
 class SerialCommunicationApp {
@@ -69,13 +69,14 @@ public:
         sender.send();
 
         TextModeSender textSender;
-        textSender.sendText();
+        textSender.sendText();*/
 
         BinaryModeSender binarySender;
-        binarySender.sendBinary();
+        binarySender.readHexBytesFromConsole();
+        binarySender.sendWithTerminator();
 
-        BinaryModeReceiver binaryReceiver;
-        binaryReceiver.receiveBinary();*/
+        //BinaryModeReceiver binaryReceiver;
+        //binaryReceiver.receiveBinary();
     }
 };
 
