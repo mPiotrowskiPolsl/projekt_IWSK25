@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <fstream>
 
 BinaryModeSender::BinaryModeSender()
 {
@@ -63,4 +64,19 @@ void BinaryModeSender::sendWithTerminator(uint8_t terminator)
     {
         std::cout << "Wys³ano " << bytesWritten << " bajtów." << std::endl;
     }
+}
+
+void BinaryModeSender::sendFile(const std::string& filename, uint8_t terminator) {
+    std::ifstream file(filename, std::ios::binary);
+    if (!file) {
+        std::cerr << "Nie mo¿na otworzyæ pliku: " << filename << std::endl;
+        return;
+    }
+
+    txBuffer.clear();
+    txBuffer.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+
+    std::cout << "Wczytano " << txBuffer.size() << " bajtów z pliku." << std::endl;
+
+    sendWithTerminator(terminator);
 }
