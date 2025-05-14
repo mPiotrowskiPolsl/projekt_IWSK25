@@ -12,7 +12,7 @@
 //#include "PingChecker.h"          // Osoba 5
 //#include "TextModeSender.h"       // Osoba 6
 #include "BinaryModeSender.h"     // Osoby 8, 9
-//#include "BinaryModeReceiver.h"   // Osoby 10, 11
+#include "BinaryModeReceiver.h"   // Osoby 10, 11
 #include "Receiver.h"             // Osoba 12
 
 class SerialCommunicationApp {
@@ -76,8 +76,8 @@ public:
         binarySender.sendWithTerminator();
         binarySender.sendFile("nazwa pliku", 0);
 
-        //BinaryModeReceiver binaryReceiver;
-        //binaryReceiver.receiveBinary();
+        BinaryModeReceiver binaryReceiver;
+        binaryReceiver.receiveBinary();
     }
 };
 
