@@ -60,11 +60,11 @@ public:
 
         /*Terminator terminator;
         terminator.chooseTerminator();
-
+        */
         PingChecker ping;
-        ping.checkConnection();
-        ping.autoBaud();
-
+        ping.ping(portManager.getHandle());
+        ping.autoBaud(portManager.getHandle());
+        /*
         Sender sender;
         sender.send();
 
