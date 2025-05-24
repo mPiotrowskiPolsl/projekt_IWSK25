@@ -68,5 +68,8 @@
     <ClInclude Include="BinaryModeSender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextModeSender.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -146,6 +146,7 @@
     <ClInclude Include="Sender.h" />
     <ClInclude Include="Terminator.h" />
     <ClInclude Include="TextModeReceiver.h" />
+    <ClInclude Include="TextModeSender.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

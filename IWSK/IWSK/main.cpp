@@ -76,8 +76,8 @@ public:
         binarySender.sendWithTerminator();
         binarySender.sendFile("nazwa pliku", 0);
 
-        BinaryModeReceiver binaryReceiver;
-        binaryReceiver.receiveBinary();
+        //BinaryModeReceiver binaryReceiver;
+        //binaryReceiver.receiveBinary();
     }
 };
 
