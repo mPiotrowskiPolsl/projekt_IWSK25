@@ -13,3 +13,5 @@ private:
 	std::string terminator;
 	size_t index;
 };
+
+Terminator* chooseTerminator();

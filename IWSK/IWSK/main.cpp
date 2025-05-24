@@ -58,9 +58,9 @@ public:
             std::cout << "Nieprawid³owy wybór." << std::endl;
         }
 
-        /*Terminator terminator;
-        terminator.chooseTerminator();
-        */
+        Terminator *terminator;
+        terminator = chooseTerminator();
+        
         PingChecker ping;
         ping.ping(portManager.getHandle());
         ping.autoBaud(portManager.getHandle());
