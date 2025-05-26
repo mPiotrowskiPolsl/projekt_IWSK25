@@ -5,6 +5,8 @@
 #include <vector>
 #include <conio.h>
 #include <windows.h>
+#include <sstream>
+#include <fstream>
 
 //OSOBA 10 DODAJ TU SWOJ KOD, CZÊŒÆ 6.2 i podstawy twojej czêœci GOTOWE
 
@@ -56,5 +58,90 @@ void BinaryModeReceiver::receiveBinary() {
         }
 
         Sleep(10);
+    }
+}
+
+void BinaryModeReceiver::sendBinary() {
+    HANDLE handle = PortManager::getHandle();
+
+    if (handle == INVALID_HANDLE_VALUE) {
+        std::cerr << "Nieprawidlowy port COM" << std::endl;
+        return;
+    }
+
+    std::cin.ignore();
+
+    std::string inputLine;
+    std::cout << "\nTryb binarny - nadawanie danych" << std::endl;
+    std::cout << "Wprowadz bajty w formacie heksadecymalnym";
+    std::getline(std::cin, inputLine);
+
+    std::vector<uint8_t> buffer = parseHexInput(inputLine);
+
+    char choice;
+    std::cout << "Czy dopisac terminator (CR - 0D)? [t/n]";
+    std::cin >> choice;
+    if (choice == 't' || choice == 'T') {
+        buffer.push_back(0x0D);
+    }
+
+    DWORD bytesWritten;
+    BOOL result = WriteFile(handle, buffer.data(), buffer.size(), &bytesWritten, nullptr);
+
+    if (!result || bytesWritten != buffer.size()) {
+        std::cerr << "Blad wysylania danych (kod: " << GetLastError() << ")" << std::endl;
+    }
+    else {
+        std::cout << "[TX] Wyslano " << bytesWritten << " bajtow." << std::endl;
+    }
+}
+
+std::vector<uint8_t> BinaryModeReceiver::parseHexInput(const std::string& input) {
+    std::vector<uint8_t> output;
+    std::istringstream stream(input);
+    std::string hexByte;
+
+    while (stream >> hexByte) {
+        try {
+            uint8_t byte = static_cast<uint8_t>(std::stoul(hexByte, nullptr, 16));
+            output.push_back(byte);
+        }
+        catch (...) {
+            std::cerr << "Nieprawidlowy bajt: " << hexByte << std::endl;
+        }
+    }
+    return output;
+}
+
+void BinaryModeReceiver::sendFile(const std::string& filePath) {
+    HANDLE handle = PortManager::getHandle();
+
+    if (handle == INVALID_HANDLE_VALUE) {
+        std::cerr << "[sendFile] Nieprawidlowy port COM" << std::endl;
+        return;
+    }
+
+    std::ifstream file(filePath, std::ios::binary);
+    if (!file.is_open()) {
+        std::cerr << "Nie mozna otworzyc pliku: " << filePath << std::endl;
+        return;
+    }
+
+    std::vector<uint8_t> buffer((std::istreambuf_iterator<char>(file)),
+        std::istreambuf_iterator<char>());
+
+    if (buffer.empty()) {
+        std::cerr << "[sendFile] Plik jest pusty!" << std::endl;
+        return;
+    }
+
+    DWORD bytesWritten;
+    BOOL result = WriteFile(handle, buffer.data(), static_cast<DWORD>(buffer.size()), &bytesWritten, nullptr);
+
+    if (!result || bytesWritten != buffer.size()) {
+        std::cerr << "[sendFile] Blad wysylania (kod: " << GetLastError() << ")" << std::endl;
+    }
+    else {
+        std::cout << "[TX] Wyslano " << bytesWritten << " bajtow z pliku." << std::endl;
     }
 }

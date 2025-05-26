@@ -41,6 +41,7 @@ public:
         std::cout << "\n=== Menu opcji ===" << std::endl;
         std::cout << "1. Odbiór w trybie standardowym" << std::endl;
         std::cout << "2. Odbiór w trybie tekstowym" << std::endl;
+        std::cout << "3. Odbiór w trybie binarnym" << std::endl;
         std::cout << "Wybierz opcjê: ";
         std::cin >> choice;
 
@@ -53,6 +54,34 @@ public:
             // Odbiór w trybie tekstowym
             TextModeReceiver textReceiver;
             textReceiver.receiveText();
+        }
+        else if (choice == 3) {
+            BinaryModeReceiver binaryReceiver;
+
+            int binChoice;
+            std::cout << "\n--- Tryb binarny ---\n";
+            std::cout << "1. Nadawanie z konsoli (hex)\n";
+            std::cout << "2. Nadawanie z pliku\n";
+            std::cout << "3. Odbiór danych binarnych\n";
+            std::cout << "Twój wybór: ";
+            std::cin >> binChoice;
+            std::cin.ignore();
+
+            if (binChoice == 1) {
+                binaryReceiver.sendBinary();
+            }
+            else if (binChoice == 2) {
+                std::string path;
+                std::cout << "Podaj nazwê pliku do wys³ania: ";
+                std::getline(std::cin, path);
+                binaryReceiver.sendFile(path);
+            }
+            else if (binChoice == 3) {
+                binaryReceiver.receiveBinary();
+            }
+            else {
+                std::cout << "Nieprawid³owy wybór trybu binarnego.\n";
+            }
         }
         else {
             std::cout << "Nieprawid³owy wybór." << std::endl;
@@ -71,13 +100,15 @@ public:
         TextModeSender textSender;
         textSender.sendText();*/
 
-        BinaryModeSender binarySender;
+       /* BinaryModeSender binarySender;
         binarySender.readHexBytesFromConsole();
         binarySender.sendWithTerminator();
         binarySender.sendFile("nazwa pliku", 0);
 
-        //BinaryModeReceiver binaryReceiver;
-        //binaryReceiver.receiveBinary();
+        BinaryModeReceiver binaryReceiver;
+        binaryReceiver.receiveBinary();
+        binaryReceiver.sendBinary();
+        */
     }
 };
 

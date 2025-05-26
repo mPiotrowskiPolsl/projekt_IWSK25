@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BinaryModeReceiver.cpp" />
     <ClCompile Include="BinaryModeSender.cpp" />
     <ClCompile Include="FlowControl.cpp" />
     <ClCompile Include="main.cpp" />
@@ -138,6 +139,7 @@
     <ClCompile Include="TextModeReceiver.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BinaryModeReceiver.h" />
     <ClInclude Include="BinaryModeSender.h" />
     <ClInclude Include="FlowControl.h" />
     <ClInclude Include="Ping.h" />
