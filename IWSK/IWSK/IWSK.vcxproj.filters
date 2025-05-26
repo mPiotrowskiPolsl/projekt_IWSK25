@@ -42,6 +42,9 @@
     <ClCompile Include="BinaryModeSender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TextModeSender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PortManager.h">

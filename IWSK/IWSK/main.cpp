@@ -10,7 +10,7 @@
 #include "Sender.h"               // Osoba 4
 #include "TextModeReceiver.h"     // Osoba 7
 #include "Ping.h"                 // Osoba 5
-//#include "TextModeSender.h"       // Osoba 6
+#include "TextModeSender.h"       // Osoba 6
 #include "BinaryModeSender.h"     // Osoby 8, 9
 #include "BinaryModeReceiver.h"   // Osoby 10, 11
 #include "Receiver.h"             // Osoba 12
@@ -41,8 +41,8 @@ public:
         std::cout << "\n=== Menu opcji ===" << std::endl;
         std::cout << "1. Odbiór w trybie standardowym" << std::endl;
         std::cout << "2. Odbiór w trybie tekstowym" << std::endl;
-        std::cout << "3. Odbiór w trybie binarnym" << std::endl;
-        std::cout << "Wybierz opcjê: ";
+        std::cout << "3. Nadawanie w trybie tekstowym." << std::endl;
+        std::cout << "4. Odbiór w trybie binarnym" << std::endl;std::cout << "Wybierz opcjê: ";
         std::cin >> choice;
 
         if (choice == 1) {
@@ -56,6 +56,18 @@ public:
             textReceiver.receiveText();
         }
         else if (choice == 3) {
+            // Nadawanie w trybie tekstowym
+            Terminator* terminator = chooseTerminator();
+            std::string terminatorText = terminator ? terminator->get() : "";
+
+            TextModeSender sender;
+            sender.setTerminator(terminatorText);
+            std::cin.ignore();
+            sender.sendText(portManager.getHandle());
+
+            delete terminator;
+        }
+        else if (choice == 4) {
             BinaryModeReceiver binaryReceiver;
 
             int binChoice;
@@ -83,22 +95,19 @@ public:
                 std::cout << "Nieprawid³owy wybór trybu binarnego.\n";
             }
         }
-        else {
+       else {
             std::cout << "Nieprawid³owy wybór." << std::endl;
         }
 
-        Terminator *terminator;
-        terminator = chooseTerminator();
-        
+        /*Terminator terminator;
+        terminator.chooseTerminator();
+        *
         PingChecker ping;
         ping.ping(portManager.getHandle());
         ping.autoBaud(portManager.getHandle());
         /*
         Sender sender;
-        sender.send();
-
-        TextModeSender textSender;
-        textSender.sendText();*/
+        sender.send();*/
 
        /* BinaryModeSender binarySender;
         binarySender.readHexBytesFromConsole();

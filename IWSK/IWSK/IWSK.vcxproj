@@ -137,6 +137,7 @@
     <ClCompile Include="Sender.cpp" />
     <ClCompile Include="Terminator.cpp" />
     <ClCompile Include="TextModeReceiver.cpp" />
+    <ClCompile Include="TextModeSender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryModeReceiver.h" />
