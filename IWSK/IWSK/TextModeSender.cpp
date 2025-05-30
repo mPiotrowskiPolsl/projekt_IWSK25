@@ -16,8 +16,8 @@ void TextModeSender::sendText(HANDLE handle) {
 
 	//Wprowadzenie tekstu
 	std::cout << "WprowadŸ tekst do wys³ania" << std::endl;
-	std::getline(std::cin, inputText);
-
+	//std::getline(std::cin, inputText);
+    std::cin >> inputText;
 
     // 3. Prezentacja bufora
     std::cout << "\n[Bufor] Tekst do wys³ania:\n" << inputText << std::endl;
@@ -37,7 +37,8 @@ void TextModeSender::sendText(HANDLE handle) {
     // 4. Potwierdzenie wysy³ki
     std::string decision;
     std::cout << "\nWpisz „wyslij”, aby nadaæ dane, lub cokolwiek innego, aby anulowaæ: ";
-    std::getline(std::cin, decision);
+    std::cin >> decision;
+    //std::getline(std::cin, decision);
 
     if (decision != "wyslij") {
         std::cout << "[TX] Anulowano nadawanie." << std::endl;
