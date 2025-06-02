@@ -58,7 +58,7 @@ std::vector<std::string> PortManager::getAvailablePorts() {
     return ports;
 }
 
-bool PortManager::selectPort() {
+bool PortManager::selectPort(int sel) {
     try {
         auto ports = getAvailablePorts();
         if (ports.empty()) {
@@ -80,7 +80,9 @@ bool PortManager::selectPort() {
             return false;
         }
 
-        selectedPort = ports[choice - 1];
+        //selectedPort = ports[choice - 1];
+        selectedPort = sel;
+
         std::wstring widePort = L"\\\\.\\" + stringToWide(selectedPort);
         hPort = CreateFileW(widePort.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
 

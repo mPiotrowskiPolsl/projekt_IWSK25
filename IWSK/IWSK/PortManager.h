@@ -15,11 +15,11 @@ private:
     static char parity;
     static int stopBits;
 
-    static std::vector<std::string> getAvailablePorts();
     static void configurePort();
 
 public:
-    static bool selectPort();
+    static std::vector<std::string> getAvailablePorts();
+    static bool selectPort(int sel);
     static void configureSpeed();
     static void configureFrame();
     static void closePort();
