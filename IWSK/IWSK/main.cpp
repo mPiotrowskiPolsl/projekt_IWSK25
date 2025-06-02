@@ -3,6 +3,7 @@
 #include <thread>
 #include <chrono>
 #include <vector>
+#include <windows.h>
 
 #include "PortManager.h"          // Osoba 1
 #include "FlowControl.h"          // Osoba 2
@@ -121,8 +122,82 @@ public:
     }
 };
 
-int main() {
-    SerialCommunicationApp app;
-    app.run();
+//int main() {
+//    SerialCommunicationApp app;
+//    app.run();
+//    return 0;
+//}
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+    LPSTR lpCmdLine, int nCmdShow) {
+    const char CLASS_NAME[] = "MyWindowClass";
+
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = WndProc;
+    wc.hInstance = hInstance;
+    wc.lpszClassName = L"MyWindowClass";
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+
+    RegisterClass(&wc);
+    int width = 800;
+    int height = 600;
+    HWND hwnd = CreateWindowEx(
+        0,
+        L"MyWindowClass",
+        L"Moje Okno WinAPI",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, 800, 600,
+        NULL, NULL, hInstance, NULL
+    );
+    HWND hEdit = CreateWindowW(L"EDIT", L"",
+        WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL |
+        ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
+        10, 10, width/2-20, 200,
+        hwnd, (HMENU)3001, hInstance, NULL);
+    HWND hEdit2 = CreateWindowW(L"EDIT", L"",
+        WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL |
+        ES_MULTILINE | ES_AUTOVSCROLL | ES_LEFT | ES_READONLY,
+        width/2+20, 10, width/ 2-20, 200,
+        hwnd, (HMENU)3002, hInstance, NULL);
+    
+
+    CreateWindowW(L"BUTTON", L"SprawdŸ",
+        WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+        10, height-80, 100, 30, hwnd, (HMENU)200, hInstance, NULL);
+
+
+    if (hwnd == NULL)
+        return 0;
+
+    ShowWindow(hwnd, nCmdShow);
+
+    MSG msg = {};
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
     return 0;
+}
+
+// Procedura okna
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+    case WM_COMMAND:
+        if (LOWORD(wParam) == 200) {
+            if (SendMessage(GetDlgItem(hwnd, 101), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                MessageBox(hwnd, L"Wybrano opcjê 1", L"Info", MB_OK);
+            else if (SendMessage(GetDlgItem(hwnd, 102), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                MessageBox(hwnd, L"Wybrano opcjê 2", L"Info", MB_OK);
+            else if (SendMessage(GetDlgItem(hwnd, 103), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                MessageBox(hwnd, L"Wybrano opcjê 3", L"Info", MB_OK);
+        }
+        break;
+
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        break;
+    }
+    return DefWindowProc(hwnd, msg, wParam, lParam);
 }
