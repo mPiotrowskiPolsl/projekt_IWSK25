@@ -15,7 +15,9 @@
 #include "BinaryModeSender.h"     // Osoby 8, 9
 #include "BinaryModeReceiver.h"   // Osoby 10, 11
 #include "Receiver.h"             // Osoba 12
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, PortManager& portmanager);
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+PortManager portmanager; //zmienna globalna :(
+
 class SerialCommunicationApp {
 public:
     int run(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -103,7 +105,7 @@ public:
        //     std::cout << "Nieprawid³owy wybór." << std::endl;
        // }
         ////////////////////////////////////////////
-        PortManager portmanager;
+        
         const char CLASS_NAME[] = "MyWindowClass";
 
         WNDCLASS wc = {};
@@ -135,15 +137,46 @@ public:
             hwnd, (HMENU)3002, hInstance, NULL);
 
 
-        //Lista Portów
+        //Lista Portów, odbywa sie w wndproc tak wlasciwie
         auto ports = portmanager.getAvailablePorts();
         for (int i = 0; i < ports.size(); i++) {
             std::wstring widestr = std::wstring(ports[i].begin(), ports[i].end());
             const wchar_t* widecstr = widestr.c_str();
-            CreateWindowW(L"BUTTON", widecstr,
-                WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-                20, 250+i*40, 100, 30, hwnd, (HMENU)101+i, hInstance, NULL);
+            int id = 101+i;
+            if (i == 0) {
+                CreateWindowW(L"BUTTON", widecstr,
+                    WS_CHILD | WS_VISIBLE | WS_GROUP | BS_AUTORADIOBUTTON,
+                    20, 250+i*40, 100, 30, hwnd, (HMENU)id, hInstance, NULL);
+                //pierwszy element z WS_GROUP
+            }
+            else {
+                CreateWindowW(L"BUTTON", widecstr,
+                    WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+                    20, 250 + i * 40, 100, 30, hwnd, (HMENU)id, hInstance, NULL);
+            }
+
         }
+        //////
+
+        //Wybór trybu transmisji
+        CreateWindowW(L"BUTTON", L"Nadawanie tryb standardowy",
+            WS_CHILD | WS_VISIBLE | WS_GROUP | BS_AUTORADIOBUTTON,
+            150, 250, 220, 30, hwnd, (HMENU)201, hInstance, NULL);
+        CreateWindowW(L"BUTTON", L"Odbiór tryb standardowy",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            150, 280, 220, 30, hwnd, (HMENU)202, hInstance, NULL);
+        CreateWindowW(L"BUTTON", L"Nadawanie tryb binarny",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            150, 310, 220, 30, hwnd, (HMENU)203, hInstance, NULL);
+        CreateWindowW(L"BUTTON", L"Odbiór tryb binarny",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            150, 340, 220, 30, hwnd, (HMENU)204, hInstance, NULL);
+        CreateWindowW(L"BUTTON", L"Nadawanie tryb tekstowy",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            150, 370, 220, 30, hwnd, (HMENU)205, hInstance, NULL);
+        CreateWindowW(L"BUTTON", L"Odbiór tryb tekstowy",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            150, 400, 220, 30, hwnd, (HMENU)206, hInstance, NULL);
         //////
 
         CreateWindowW(L"BUTTON", L"SprawdŸ",
@@ -200,19 +233,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 }
 
 // Procedura okna
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, PortManager& portmanager) {
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+
+    
+    int portNr;
+
+    std::string portNR = std::to_string(LOWORD(wParam));
+    std::wstring widestr = std::wstring(portNR.begin(), portNR.end());
+    const wchar_t* widecstr = widestr.c_str();
+
     switch (msg) {
     case WM_COMMAND:
-        if (LOWORD(wParam) == 200) {
+
+        
+
+        MessageBox(hwnd, widecstr, L"Info", MB_OK);
+        /*if (LOWORD(wParam) == 200) {
             if (SendMessage(GetDlgItem(hwnd, 101), BM_GETCHECK, 0, 0) == BST_CHECKED)
                 MessageBox(hwnd, L"Wybrano opcjê 1", L"Info", MB_OK);
             else if (SendMessage(GetDlgItem(hwnd, 102), BM_GETCHECK, 0, 0) == BST_CHECKED)
                 MessageBox(hwnd, L"Wybrano opcjê 2", L"Info", MB_OK);
             else if (SendMessage(GetDlgItem(hwnd, 103), BM_GETCHECK, 0, 0) == BST_CHECKED)
                 MessageBox(hwnd, L"Wybrano opcjê 3", L"Info", MB_OK);
-        }
+        }*/
         if (LOWORD(wParam) < 200 && LOWORD(wParam) > 100) {
             portmanager.selectPort(LOWORD(wParam) - 101);
+            //MessageBox(hwnd, L"Wybrano opcjê 3", L"Info", MB_OK);
         }
         break;
 
