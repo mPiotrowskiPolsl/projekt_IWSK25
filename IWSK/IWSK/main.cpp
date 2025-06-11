@@ -138,7 +138,16 @@ public:
 
 
         //Lista Portów, odbywa sie w wndproc tak wlasciwie
-        auto ports = portmanager.getAvailablePorts();
+        std::vector<std::string> ports;
+        try {
+
+            ports = portmanager.getAvailablePorts();
+        }
+        catch (std::runtime_error e) {
+            
+            MessageBox(hwnd, L"Brak dostêpu do rej systemowego", L"Info", MB_OK);
+            //tu ma byc normalnie wiadomosc z wyjatku |todo
+        }
         for (int i = 0; i < ports.size(); i++) {
             std::wstring widestr = std::wstring(ports[i].begin(), ports[i].end());
             const wchar_t* widecstr = widestr.c_str();
