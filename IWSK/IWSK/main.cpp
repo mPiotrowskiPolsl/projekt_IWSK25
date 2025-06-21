@@ -15,6 +15,15 @@
 #include "BinaryModeSender.h"     // Osoby 8, 9
 #include "BinaryModeReceiver.h"   // Osoby 10, 11
 #include "Receiver.h"             // Osoba 12
+
+
+Receiver receiver;        // obiekt odbiornika
+HWND hEdit2 = nullptr;    // uchwyt do pola tekstowego odbioru
+
+#define WM_UPDATE_TEXT (WM_USER + 1)   // wÅ‚asny komunikat do aktualizacji tekstu
+std::wstring receivedText;            // przechowa tekst odebrany w tle
+
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 PortManager portmanager; //zmienna globalna :(
 
@@ -26,7 +35,7 @@ public:
 ////////////////////////////////////////////
        // PortManager portManager;
        // if (!portManager.selectPort()) {
-       //     std::cerr << "Brak dostêpnego portu!" << std::endl;
+       //     std::cerr << "Brak dostÄ™pnego portu!" << std::endl;
        //     return 0;
        // }
        // portManager.configureSpeed();
@@ -45,19 +54,19 @@ public:
 
        // int choice;
        // std::cout << "\n=== Menu opcji ===" << std::endl;
-       // std::cout << "1. Odbiór w trybie standardowym" << std::endl;
-       // std::cout << "2. Odbiór w trybie tekstowym" << std::endl;
+       // std::cout << "1. OdbiÃ³r w trybie standardowym" << std::endl;
+       // std::cout << "2. OdbiÃ³r w trybie tekstowym" << std::endl;
        // std::cout << "3. Nadawanie w trybie tekstowym." << std::endl;
-       // std::cout << "4. Odbiór w trybie binarnym" << std::endl;std::cout << "Wybierz opcjê: ";
+       // std::cout << "4. OdbiÃ³r w trybie binarnym" << std::endl;std::cout << "Wybierz opcjÄ™: ";
        // std::cin >> choice;
 
        // if (choice == 1) {
-       //     // Standardowy odbiór
+       //     // Standardowy odbiÃ³r
        //     Receiver receiver;
        //     receiver.receive();
        // }
        // else if (choice == 2) {
-       //     // Odbiór w trybie tekstowym
+       //     // OdbiÃ³r w trybie tekstowym
        //     TextModeReceiver textReceiver;
        //     textReceiver.receiveText();
        // }
@@ -80,8 +89,8 @@ public:
        //     std::cout << "\n--- Tryb binarny ---\n";
        //     std::cout << "1. Nadawanie z konsoli (hex)\n";
        //     std::cout << "2. Nadawanie z pliku\n";
-       //     std::cout << "3. Odbiór danych binarnych\n";
-       //     std::cout << "Twój wybór: ";
+       //     std::cout << "3. OdbiÃ³r danych binarnych\n";
+       //     std::cout << "TwÃ³j wybÃ³r: ";
        //     std::cin >> binChoice;
        //     std::cin.ignore();
 
@@ -90,7 +99,7 @@ public:
        //     }
        //     else if (binChoice == 2) {
        //         std::string path;
-       //         std::cout << "Podaj nazwê pliku do wys³ania: ";
+       //         std::cout << "Podaj nazwÄ™ pliku do wysÅ‚ania: ";
        //         std::getline(std::cin, path);
        //         binaryReceiver.sendFile(path);
        //     }
@@ -98,11 +107,11 @@ public:
        //         binaryReceiver.receiveBinary();
        //     }
        //     else {
-       //         std::cout << "Nieprawid³owy wybór trybu binarnego.\n";
+       //         std::cout << "NieprawidÅ‚owy wybÃ³r trybu binarnego.\n";
        //     }
        // }
        //else {
-       //     std::cout << "Nieprawid³owy wybór." << std::endl;
+       //     std::cout << "NieprawidÅ‚owy wybÃ³r." << std::endl;
        // }
         ////////////////////////////////////////////
         
@@ -130,14 +139,14 @@ public:
             ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
             10, 10, width / 2 - 20, 200,
             hwnd, (HMENU)3001, hInstance, NULL);
-        HWND hEdit2 = CreateWindowW(L"EDIT", L"",
+        hEdit2 = CreateWindowW(L"EDIT", L"",
             WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL |
             ES_MULTILINE | ES_AUTOVSCROLL | ES_LEFT | ES_READONLY,
             width / 2 + 10, 10, width / 2 - 20, 200,
             hwnd, (HMENU)3002, hInstance, NULL);
 
 
-        //Lista Portów, odbywa sie w wndproc tak wlasciwie
+        //Lista PortÃ³w, odbywa sie w wndproc tak wlasciwie
         std::vector<std::string> ports;
         try {
 
@@ -145,7 +154,7 @@ public:
         }
         catch (std::runtime_error e) {
             
-            MessageBox(hwnd, L"Brak dostêpu do rej systemowego", L"Info", MB_OK);
+            MessageBox(hwnd, L"Brak dostÄ™pu do rej systemowego", L"Info", MB_OK);
             //tu ma byc normalnie wiadomosc z wyjatku |todo
         }
         for (int i = 0; i < ports.size(); i++) {
@@ -167,28 +176,28 @@ public:
         }
         //////
 
-        //Wybór trybu transmisji
+        //WybÃ³r trybu transmisji
         CreateWindowW(L"BUTTON", L"Nadawanie tryb standardowy",
             WS_CHILD | WS_VISIBLE | WS_GROUP | BS_AUTORADIOBUTTON,
             150, 250, 220, 30, hwnd, (HMENU)201, hInstance, NULL);
-        CreateWindowW(L"BUTTON", L"Odbiór tryb standardowy",
+        CreateWindowW(L"BUTTON", L"OdbiÃ³r tryb standardowy",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 280, 220, 30, hwnd, (HMENU)202, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Nadawanie tryb binarny",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 310, 220, 30, hwnd, (HMENU)203, hInstance, NULL);
-        CreateWindowW(L"BUTTON", L"Odbiór tryb binarny",
+        CreateWindowW(L"BUTTON", L"OdbiÃ³r tryb binarny",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 340, 220, 30, hwnd, (HMENU)204, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Nadawanie tryb tekstowy",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 370, 220, 30, hwnd, (HMENU)205, hInstance, NULL);
-        CreateWindowW(L"BUTTON", L"Odbiór tryb tekstowy",
+        CreateWindowW(L"BUTTON", L"OdbiÃ³r tryb tekstowy",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 400, 220, 30, hwnd, (HMENU)206, hInstance, NULL);
         //////
 
-        CreateWindowW(L"BUTTON", L"SprawdŸ",
+        CreateWindowW(L"BUTTON", L"SprawdÅº",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
             10, height - 80, 100, 30, hwnd, (HMENU)200, hInstance, NULL);
 
@@ -233,43 +242,82 @@ public:
 //    return 0;
 //}
 
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     LPSTR lpCmdLine, int nCmdShow) {
+    AllocConsole();
+
+    FILE* fpOut;
+    freopen_s(&fpOut, "CONOUT$", "w", stdout);
+    freopen_s(&fpOut, "CONOUT$", "w", stderr);
+
     SerialCommunicationApp app;
-    app.run(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
-    
+    return app.run(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 }
+
+
+
+
 
 // Procedura okna
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
     
-    int portNr;
 
     std::string portNR = std::to_string(LOWORD(wParam));
     std::wstring widestr = std::wstring(portNR.begin(), portNR.end());
     const wchar_t* widecstr = widestr.c_str();
 
     switch (msg) {
-    case WM_COMMAND:
+    /*case WM_COMMANDDDD:
 
         
 
         MessageBox(hwnd, widecstr, L"Info", MB_OK);
         /*if (LOWORD(wParam) == 200) {
             if (SendMessage(GetDlgItem(hwnd, 101), BM_GETCHECK, 0, 0) == BST_CHECKED)
-                MessageBox(hwnd, L"Wybrano opcjê 1", L"Info", MB_OK);
+                MessageBox(hwnd, L"Wybrano opcjÄ™ 1", L"Info", MB_OK);
             else if (SendMessage(GetDlgItem(hwnd, 102), BM_GETCHECK, 0, 0) == BST_CHECKED)
-                MessageBox(hwnd, L"Wybrano opcjê 2", L"Info", MB_OK);
+                MessageBox(hwnd, L"Wybrano opcjÄ™ 2", L"Info", MB_OK);
             else if (SendMessage(GetDlgItem(hwnd, 103), BM_GETCHECK, 0, 0) == BST_CHECKED)
-                MessageBox(hwnd, L"Wybrano opcjê 3", L"Info", MB_OK);
-        }*/
+                MessageBox(hwnd, L"Wybrano opcjÄ™ 3", L"Info", MB_OK);
+        }
         if (LOWORD(wParam) < 200 && LOWORD(wParam) > 100) {
             portmanager.selectPort(LOWORD(wParam) - 101);
-            //MessageBox(hwnd, L"Wybrano opcjê 3", L"Info", MB_OK);
+            //MessageBox(hwnd, L"Wybrano opcjÄ™ 3", L"Info", MB_OK);
+        }
+        break;*/
+
+
+    case WM_COMMAND: {
+        int id = LOWORD(wParam);
+
+        if (id == 200) {
+            if (SendMessage(GetDlgItem(hwnd, 202), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                std::thread t([hwnd]() {
+                    std::string result = receiver.receive();                         // odbiÃ³r danych
+                    receivedText = std::wstring(result.begin(), result.end());       // zapis do globalnej zmiennej
+                    PostMessage(hwnd, WM_UPDATE_TEXT, 0, 0);                          // wyÅ›lij komunikat do GUI
+                    });
+                t.detach();  // uruchom jako wÄ…tek niezaleÅ¼ny
+            }
+        }
+
+
+        if (id > 100 && id < 200) {
+            portmanager.selectPort(id - 101);
+        }
+
+        break;
+    }
+
+
+    case WM_UPDATE_TEXT:
+        if (hEdit2 != nullptr) {
+            SetWindowTextW(hEdit2, receivedText.c_str());  // ustaw tekst w polu EDIT
         }
         break;
+
+
 
     case WM_DESTROY:
         PostQuitMessage(0);
