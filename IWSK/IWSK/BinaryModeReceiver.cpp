@@ -10,6 +10,9 @@
 
 //OSOBA 10 DODAJ TU SWOJ KOD, CZÊŒÆ 6.2 i podstawy twojej czêœci GOTOWE
 
+extern std::wstring receivedText;
+#define WM_UPDATE_TEXT (WM_USER + 1)
+
 
 BinaryModeReceiver::BinaryModeReceiver() {}
 
@@ -144,4 +147,44 @@ void BinaryModeReceiver::sendFile(const std::string& filePath) {
     else {
         std::cout << "[TX] Wyslano " << bytesWritten << " bajtow z pliku." << std::endl;
     }
+
+
 }
+
+std::wstring BinaryModeReceiver::receiveBinaryToString(HWND hwnd) {
+    HANDLE handle = PortManager::getHandle();
+    if (handle == INVALID_HANDLE_VALUE) {
+        return L"B³¹d: nieprawid³owy port COM.\n";
+    }
+
+    std::wstring resultText;
+    std::vector<uint8_t> buffer(BUFFER_SIZE);
+    DWORD bytesRead;
+
+    while (true) {
+        BOOL success = ReadFile(handle, buffer.data(), BUFFER_SIZE, &bytesRead, nullptr);
+        if (!success) {
+            resultText += L"\nB³¹d odczytu.\n";
+            break;
+        }
+
+        if (bytesRead > 0) {
+            for (DWORD i = 0; i < bytesRead; ++i) {
+                wchar_t byteHex[6];
+                swprintf(byteHex, 6, L"%02X ", buffer[i]);
+                resultText += byteHex;
+            }
+            resultText += L"\n";
+
+            // Zaktualizuj dane w GUI
+            receivedText = resultText;
+            PostMessage(hwnd, WM_UPDATE_TEXT, 0, 0);
+        }
+
+        // Przerwanie w¹tku mo¿esz dodaæ przez jak¹œ flagê np. stopRequested
+        Sleep(100);
+    }
+
+    return resultText;
+}
+

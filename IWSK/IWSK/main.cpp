@@ -20,7 +20,8 @@
 Receiver receiver;        // obiekt odbiornika
 HWND hEdit2 = nullptr;    // uchwyt do pola tekstowego odbioru
 
-#define WM_UPDATE_TEXT (WM_USER + 1)   // własny komunikat do aktualizacji tekstu
+#define WM_UPDATE_TEXT (WM_USER + 1)
+// własny komunikat do aktualizacji tekstu
 std::wstring receivedText;            // przechowa tekst odebrany w tle
 
 
@@ -144,6 +145,22 @@ public:
             ES_MULTILINE | ES_AUTOVSCROLL | ES_LEFT | ES_READONLY,
             width / 2 + 10, 10, width / 2 - 20, 200,
             hwnd, (HMENU)3002, hInstance, NULL);
+
+    
+        CreateWindowW(L"EDIT", L"",
+            WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT,
+            10, 500, 400, 25, hwnd, (HMENU)3003, hInstance, NULL);
+
+        
+        CreateWindowW(L"BUTTON", L"Dodaj terminator (CR)",
+            WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
+            420, 500, 200, 25, hwnd, (HMENU)3004, hInstance, NULL);
+
+       
+        CreateWindowW(L"BUTTON", L"Wyślij (tryb binarny)",
+            WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+            630, 500, 140, 30, hwnd, (HMENU)3005, hInstance, NULL);
+
 
 
         //Lista Portów, odbywa sie w wndproc tak wlasciwie
@@ -301,7 +318,49 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 t.detach();  // uruchom jako wątek niezależny
             }
         }
+        else if (SendMessage(GetDlgItem(hwnd, 204), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+            std::thread t([hwnd]() {
+                BinaryModeReceiver binReceiver;
+                binReceiver.receiveBinaryToString(hwnd);
+                });
+            t.detach();
+        }
 
+        if (id == 3005) {
+    wchar_t buffer[1024];
+    GetWindowTextW(GetDlgItem(hwnd, 3003), buffer, 1024);  // pobierz dane hex z pola
+
+    // konwersja do std::string
+    std::wstring ws(buffer);
+    std::string hexInput(ws.begin(), ws.end());
+
+    // sprawdzenie checkboxa
+    bool addTerminator = (SendMessage(GetDlgItem(hwnd, 3004), BM_GETCHECK, 0, 0) == BST_CHECKED);
+
+    std::thread t([hexInput, addTerminator]() {
+        HANDLE handle = PortManager::getHandle();
+        if (handle == INVALID_HANDLE_VALUE) {
+            std::cerr << "[sendBinaryGUI] Błąd portu\n";
+            return;
+        }
+
+        BinaryModeReceiver bmr;
+        std::vector<uint8_t> buffer = bmr.parseHexInput(hexInput);
+
+        if (addTerminator)
+            buffer.push_back(0x0D);
+
+        DWORD bytesWritten;
+        BOOL result = WriteFile(handle, buffer.data(), buffer.size(), &bytesWritten, nullptr);
+
+        if (!result || bytesWritten != buffer.size()) {
+            std::cerr << "[sendBinaryGUI] Błąd wysyłania: " << GetLastError() << "\n";
+        } else {
+            std::cout << "[TX] Wysłano " << bytesWritten << " bajtów binarnie z GUI\n";
+        }
+    });
+    t.detach();
+}
 
         if (id > 100 && id < 200) {
             portmanager.selectPort(id - 101);
