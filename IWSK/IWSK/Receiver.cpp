@@ -1,18 +1,27 @@
 #include "Receiver.h"
-#include "PortManager.h"  // aby mieæ dostêp do PortManager::hPort
+#include "PortManager.h"
 #include <iostream>
 
 #define BUFFER_SIZE 256
 
-Receiver::Receiver() {
-    // Mo¿na dodaæ logikê inicjalizacji jeœli potrzeba
-}
+extern PortManager portmanager;  // zakÅ‚adamy, Å¼e obiekt istnieje globalnie
 
-void Receiver::receive() {
-    HANDLE handle = PortManager::getHandle();
+
+#define WM_UPDATE_TEXT (WM_USER + 1)  // wÅ‚asny identyfikator komunikatu
+
+
+Receiver::Receiver() {}
+
+std::string Receiver::receive() {
+    HANDLE handle = portmanager.getHandle();  // poprawne uÅ¼ycie instancji
+    std::string output;
+
+
+    //return "test";
+
     if (handle == INVALID_HANDLE_VALUE) {
-        std::cerr << "[Receiver] Nieprawidlowy uchwyt portu COM!" << std::endl;
-        return;
+        std::cerr << "[Receiver] NieprawidÅ‚owy uchwyt portu COM!" << std::endl;
+        return "[BÅ‚Ä…d] NieprawidÅ‚owy uchwyt!";
     }
 
     char buffer[BUFFER_SIZE];
@@ -22,15 +31,19 @@ void Receiver::receive() {
 
     BOOL result = ReadFile(handle, buffer, sizeof(buffer) - 1, &bytesRead, NULL);
     if (!result) {
-        std::cerr << "[Receiver] Blad odczytu (kod: " << GetLastError() << ")" << std::endl;
-        return;
+        std::cerr << "[Receiver] BÅ‚Ä…d odczytu (kod: " << GetLastError() << ")" << std::endl;
+        return "[BÅ‚Ä…d] ReadFile nieudany!";
     }
 
     if (bytesRead > 0) {
-        buffer[bytesRead] = '\0'; // koñczymy ci¹g tekstowy
-        std::cout << "[RX] Odebrano: " << buffer << std::endl;
+        buffer[bytesRead] = '\0';  // zakoÅ„czenie ciÄ…gu tekstowego
+        output = buffer;
+        std::cout << "[RX] Odebrano: " << output << std::endl;
     }
     else {
-        std::cout << "[RX] Brak danych." << std::endl;
+        output = "[RX] Brak danych.";
+        std::cout << output << std::endl;
     }
+
+    return output;
 }
