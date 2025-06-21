@@ -5,6 +5,6 @@
 class Receiver {
 public:
     Receiver();
-    void receive();
+    std::string receive();
 };
 #pragma once
