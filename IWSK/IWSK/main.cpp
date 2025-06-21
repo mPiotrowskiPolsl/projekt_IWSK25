@@ -151,12 +151,7 @@ public:
             WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT,
             10, 500, 400, 25, hwnd, (HMENU)3003, hInstance, NULL);
 
-        
-        CreateWindowW(L"BUTTON", L"Dodaj terminator (CR)",
-            WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
-            420, 500, 200, 25, hwnd, (HMENU)3004, hInstance, NULL);
-
-       
+                      
         CreateWindowW(L"BUTTON", L"Wyślij (tryb binarny)",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
             630, 500, 140, 30, hwnd, (HMENU)3005, hInstance, NULL);
@@ -212,6 +207,28 @@ public:
         CreateWindowW(L"BUTTON", L"Odbiór tryb tekstowy",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 400, 220, 30, hwnd, (HMENU)206, hInstance, NULL);
+        //////
+
+
+        //Wybór terminatora
+        CreateWindowW(L"BUTTON", L"Dodaj terminator",
+            WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
+            400, 250, 150, 30, hwnd, (HMENU)3004, hInstance, NULL);
+        CreateWindowW(L"BUTTON", L"CR",
+            WS_CHILD | WS_VISIBLE | WS_GROUP | BS_AUTORADIOBUTTON,
+            400, 280, 150, 30, hwnd, (HMENU)301, hInstance, NULL);
+        CreateWindowW(L"BUTTON", L"LF",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            400, 310, 150, 30, hwnd, (HMENU)302, hInstance, NULL);
+        CreateWindowW(L"BUTTON", L"CR-LF",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            400, 340, 150, 30, hwnd, (HMENU)303, hInstance, NULL);
+        CreateWindowW(L"BUTTON", L"Niestandardowy:",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            400, 370, 150, 30, hwnd, (HMENU)304, hInstance, NULL);
+        CreateWindowW(L"EDIT", L"",
+            WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT,
+            550, 370, 50, 25, hwnd, (HMENU)305, hInstance, NULL);
         //////
 
         CreateWindowW(L"BUTTON", L"Sprawdź",
@@ -337,7 +354,28 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     // sprawdzenie checkboxa
     bool addTerminator = (SendMessage(GetDlgItem(hwnd, 3004), BM_GETCHECK, 0, 0) == BST_CHECKED);
 
-    std::thread t([hexInput, addTerminator]() {
+    Terminator* terminator = nullptr;
+
+    if (addTerminator) {
+        if (SendMessage(GetDlgItem(hwnd, 301), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+            terminator = new Terminator("\r");
+        }
+        else if (SendMessage(GetDlgItem(hwnd, 302), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+            terminator = new Terminator("\n");
+        }
+        else if (SendMessage(GetDlgItem(hwnd, 303), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+            terminator = new Terminator("\r\n");
+        }
+        else if (SendMessage(GetDlgItem(hwnd, 304), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+            wchar_t buf[2];
+            GetWindowTextW(GetDlgItem(hwnd, 305), buf, 2);
+            std::wstring tmp(buf);
+            std::string sequence(tmp.begin(), tmp.end());
+            terminator = new Terminator("\r");
+        }
+    }
+
+    std::thread t([hexInput, addTerminator, terminator]() {
         HANDLE handle = PortManager::getHandle();
         if (handle == INVALID_HANDLE_VALUE) {
             std::cerr << "[sendBinaryGUI] Błąd portu\n";
@@ -347,8 +385,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         BinaryModeReceiver bmr;
         std::vector<uint8_t> buffer = bmr.parseHexInput(hexInput);
 
-        if (addTerminator)
-            buffer.push_back(0x0D);
+        if (addTerminator) {
+            std::string tmp = terminator->get();
+            for(char c : tmp) buffer.push_back(c);
+        }
 
         DWORD bytesWritten;
         BOOL result = WriteFile(handle, buffer.data(), buffer.size(), &bytesWritten, nullptr);
