@@ -151,7 +151,7 @@ void BinaryModeReceiver::sendFile(const std::string& filePath) {
 
 }
 
-std::wstring BinaryModeReceiver::receiveBinaryToString(HWND hwnd) {
+std::wstring BinaryModeReceiver::receiveBinaryToString() {
     HANDLE handle = PortManager::getHandle();
     if (handle == INVALID_HANDLE_VALUE) {
         return L"B³¹d: nieprawid³owy port COM.\n";
@@ -161,11 +161,11 @@ std::wstring BinaryModeReceiver::receiveBinaryToString(HWND hwnd) {
     std::vector<uint8_t> buffer(BUFFER_SIZE);
     DWORD bytesRead;
 
-    while (true) {
+    //while (true) {
         BOOL success = ReadFile(handle, buffer.data(), BUFFER_SIZE, &bytesRead, nullptr);
         if (!success) {
             resultText += L"\nB³¹d odczytu.\n";
-            break;
+            //break;
         }
 
         if (bytesRead > 0) {
@@ -177,13 +177,18 @@ std::wstring BinaryModeReceiver::receiveBinaryToString(HWND hwnd) {
             resultText += L"\n";
 
             // Zaktualizuj dane w GUI
-            receivedText = resultText;
-            PostMessage(hwnd, WM_UPDATE_TEXT, 0, 0);
+            
+            //receivedText = resultText;
+            
+            //PostMessage(hwnd, WM_UPDATE_TEXT, 0, 0);
         }
-
+        else {
+            resultText = L"[ReceiveBinary]Brak danych";
+        }
+        return resultText;
         // Przerwanie w¹tku mo¿esz dodaæ przez jak¹œ flagê np. stopRequested
-        Sleep(100);
-    }
+        //Sleep(100);
+    //}
 
     return resultText;
 }

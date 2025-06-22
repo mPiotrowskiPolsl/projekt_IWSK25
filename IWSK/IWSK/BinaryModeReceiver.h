@@ -15,7 +15,7 @@ public:
     void receiveBinary();
     void sendBinary();
     void sendFile(const std::string& filePath);
-    std::wstring receiveBinaryToString(HWND hwnd);
+    std::wstring receiveBinaryToString();
 
     std::vector<uint8_t> parseHexInput(const std::string& input);
 
