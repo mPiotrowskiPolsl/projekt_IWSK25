@@ -33,89 +33,89 @@ public:
     int run(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         LPSTR lpCmdLine, int nCmdShow) {
 
-////////////////////////////////////////////
-       // PortManager portManager;
-       // if (!portManager.selectPort()) {
-       //     std::cerr << "Brak dostępnego portu!" << std::endl;
-       //     return 0;
-       // }
-       // portManager.configureSpeed();
-       // portManager.configureFrame();
-
-       // std::string port;
-       // std::cout << "Enter COM port (e.g., COM1, COM2): ";
-       // std::cin >> port;
-
-       // FlowControl flowControl(port);
-       // flowControl.setup();
-
-       // if (flowControl.isManualMode()) {
-       //     flowControl.manualFlow();
-       // }
-
-       // int choice;
-       // std::cout << "\n=== Menu opcji ===" << std::endl;
-       // std::cout << "1. Odbiór w trybie standardowym" << std::endl;
-       // std::cout << "2. Odbiór w trybie tekstowym" << std::endl;
-       // std::cout << "3. Nadawanie w trybie tekstowym." << std::endl;
-       // std::cout << "4. Odbiór w trybie binarnym" << std::endl;std::cout << "Wybierz opcję: ";
-       // std::cin >> choice;
-
-       // if (choice == 1) {
-       //     // Standardowy odbiór
-       //     Receiver receiver;
-       //     receiver.receive();
-       // }
-       // else if (choice == 2) {
-       //     // Odbiór w trybie tekstowym
-       //     TextModeReceiver textReceiver;
-       //     textReceiver.receiveText();
-       // }
-       // else if (choice == 3) {
-       //     // Nadawanie w trybie tekstowym
-       //     Terminator* terminator = chooseTerminator();
-       //     std::string terminatorText = terminator ? terminator->get() : "";
-
-       //     TextModeSender sender;
-       //     sender.setTerminator(terminatorText);
-       //     std::cin.ignore();
-       //     sender.sendText(portManager.getHandle());
-
-       //     delete terminator;
-       // }
-       // else if (choice == 4) {
-       //     BinaryModeReceiver binaryReceiver;
-
-       //     int binChoice;
-       //     std::cout << "\n--- Tryb binarny ---\n";
-       //     std::cout << "1. Nadawanie z konsoli (hex)\n";
-       //     std::cout << "2. Nadawanie z pliku\n";
-       //     std::cout << "3. Odbiór danych binarnych\n";
-       //     std::cout << "Twój wybór: ";
-       //     std::cin >> binChoice;
-       //     std::cin.ignore();
-
-       //     if (binChoice == 1) {
-       //         binaryReceiver.sendBinary();
-       //     }
-       //     else if (binChoice == 2) {
-       //         std::string path;
-       //         std::cout << "Podaj nazwę pliku do wysłania: ";
-       //         std::getline(std::cin, path);
-       //         binaryReceiver.sendFile(path);
-       //     }
-       //     else if (binChoice == 3) {
-       //         binaryReceiver.receiveBinary();
-       //     }
-       //     else {
-       //         std::cout << "Nieprawidłowy wybór trybu binarnego.\n";
-       //     }
-       // }
-       //else {
-       //     std::cout << "Nieprawidłowy wybór." << std::endl;
-       // }
         ////////////////////////////////////////////
-        
+               // PortManager portManager;
+               // if (!portManager.selectPort()) {
+               //     std::cerr << "Brak dostępnego portu!" << std::endl;
+               //     return 0;
+               // }
+               // portManager.configureSpeed();
+               // portManager.configureFrame();
+
+               // std::string port;
+               // std::cout << "Enter COM port (e.g., COM1, COM2): ";
+               // std::cin >> port;
+
+               // FlowControl flowControl(port);
+               // flowControl.setup();
+
+               // if (flowControl.isManualMode()) {
+               //     flowControl.manualFlow();
+               // }
+
+               // int choice;
+               // std::cout << "\n=== Menu opcji ===" << std::endl;
+               // std::cout << "1. Odbiór w trybie standardowym" << std::endl;
+               // std::cout << "2. Odbiór w trybie tekstowym" << std::endl;
+               // std::cout << "3. Nadawanie w trybie tekstowym." << std::endl;
+               // std::cout << "4. Odbiór w trybie binarnym" << std::endl;std::cout << "Wybierz opcję: ";
+               // std::cin >> choice;
+
+               // if (choice == 1) {
+               //     // Standardowy odbiór
+               //     Receiver receiver;
+               //     receiver.receive();
+               // }
+               // else if (choice == 2) {
+               //     // Odbiór w trybie tekstowym
+               //     TextModeReceiver textReceiver;
+               //     textReceiver.receiveText();
+               // }
+               // else if (choice == 3) {
+               //     // Nadawanie w trybie tekstowym
+               //     Terminator* terminator = chooseTerminator();
+               //     std::string terminatorText = terminator ? terminator->get() : "";
+
+               //     TextModeSender sender;
+               //     sender.setTerminator(terminatorText);
+               //     std::cin.ignore();
+               //     sender.sendText(portManager.getHandle());
+
+               //     delete terminator;
+               // }
+               // else if (choice == 4) {
+               //     BinaryModeReceiver binaryReceiver;
+
+               //     int binChoice;
+               //     std::cout << "\n--- Tryb binarny ---\n";
+               //     std::cout << "1. Nadawanie z konsoli (hex)\n";
+               //     std::cout << "2. Nadawanie z pliku\n";
+               //     std::cout << "3. Odbiór danych binarnych\n";
+               //     std::cout << "Twój wybór: ";
+               //     std::cin >> binChoice;
+               //     std::cin.ignore();
+
+               //     if (binChoice == 1) {
+               //         binaryReceiver.sendBinary();
+               //     }
+               //     else if (binChoice == 2) {
+               //         std::string path;
+               //         std::cout << "Podaj nazwę pliku do wysłania: ";
+               //         std::getline(std::cin, path);
+               //         binaryReceiver.sendFile(path);
+               //     }
+               //     else if (binChoice == 3) {
+               //         binaryReceiver.receiveBinary();
+               //     }
+               //     else {
+               //         std::cout << "Nieprawidłowy wybór trybu binarnego.\n";
+               //     }
+               // }
+               //else {
+               //     std::cout << "Nieprawidłowy wybór." << std::endl;
+               // }
+                ////////////////////////////////////////////
+
         const char CLASS_NAME[] = "MyWindowClass";
 
         WNDCLASS wc = {};
@@ -146,13 +146,13 @@ public:
             width / 2 + 10, 10, width / 2 - 20, 200,
             hwnd, (HMENU)3002, hInstance, NULL);
 
-    
+
         CreateWindowW(L"EDIT", L"",
             WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT,
             10, 500, 400, 25, hwnd, (HMENU)3003, hInstance, NULL);
 
-                      
-        CreateWindowW(L"BUTTON", L"Wyślij (tryb binarny)",
+
+        CreateWindowW(L"BUTTON", L"Wyslij (tryb binarny)",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
             630, 500, 140, 30, hwnd, (HMENU)3005, hInstance, NULL);
 
@@ -165,18 +165,18 @@ public:
             ports = portmanager.getAvailablePorts();
         }
         catch (std::runtime_error e) {
-            
-            MessageBox(hwnd, L"Brak dostępu do rej systemowego", L"Info", MB_OK);
+
+            MessageBox(hwnd, L"Brak dostepu do rej systemowego", L"Info", MB_OK);
             //tu ma byc normalnie wiadomosc z wyjatku |todo
         }
         for (int i = 0; i < ports.size(); i++) {
             std::wstring widestr = std::wstring(ports[i].begin(), ports[i].end());
             const wchar_t* widecstr = widestr.c_str();
-            int id = 101+i;
+            int id = 101 + i;
             if (i == 0) {
                 CreateWindowW(L"BUTTON", widecstr,
                     WS_CHILD | WS_VISIBLE | WS_GROUP | BS_AUTORADIOBUTTON,
-                    20, 250+i*40, 100, 30, hwnd, (HMENU)id, hInstance, NULL);
+                    20, 250 + i * 40, 100, 30, hwnd, (HMENU)id, hInstance, NULL);
                 //pierwszy element z WS_GROUP
             }
             else {
@@ -192,19 +192,19 @@ public:
         CreateWindowW(L"BUTTON", L"Nadawanie tryb standardowy",
             WS_CHILD | WS_VISIBLE | WS_GROUP | BS_AUTORADIOBUTTON,
             150, 250, 220, 30, hwnd, (HMENU)201, hInstance, NULL);
-        CreateWindowW(L"BUTTON", L"Odbiór tryb standardowy",
+        CreateWindowW(L"BUTTON", L"Odbior tryb standardowy",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 280, 220, 30, hwnd, (HMENU)202, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Nadawanie tryb binarny",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 310, 220, 30, hwnd, (HMENU)203, hInstance, NULL);
-        CreateWindowW(L"BUTTON", L"Odbiór tryb binarny",
+        CreateWindowW(L"BUTTON", L"Odbior tryb binarny",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 340, 220, 30, hwnd, (HMENU)204, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Nadawanie tryb tekstowy",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 370, 220, 30, hwnd, (HMENU)205, hInstance, NULL);
-        CreateWindowW(L"BUTTON", L"Odbiór tryb tekstowy",
+        CreateWindowW(L"BUTTON", L"Odbior tryb tekstowy",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 400, 220, 30, hwnd, (HMENU)206, hInstance, NULL);
         //////
@@ -231,7 +231,7 @@ public:
             550, 370, 50, 25, hwnd, (HMENU)305, hInstance, NULL);
         //////
 
-        CreateWindowW(L"BUTTON", L"Sprawdź",
+        CreateWindowW(L"BUTTON", L"Sprawdz",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
             10, height - 80, 100, 30, hwnd, (HMENU)200, hInstance, NULL);
 
@@ -258,15 +258,15 @@ public:
         Sender sender;
         sender.send();*/
 
-       /* BinaryModeSender binarySender;
-        binarySender.readHexBytesFromConsole();
-        binarySender.sendWithTerminator();
-        binarySender.sendFile("nazwa pliku", 0);
+        /* BinaryModeSender binarySender;
+         binarySender.readHexBytesFromConsole();
+         binarySender.sendWithTerminator();
+         binarySender.sendFile("nazwa pliku", 0);
 
-        BinaryModeReceiver binaryReceiver;
-        binaryReceiver.receiveBinary();
-        binaryReceiver.sendBinary();
-        */
+         BinaryModeReceiver binaryReceiver;
+         binaryReceiver.receiveBinary();
+         binaryReceiver.sendBinary();
+         */
     }
 };
 
@@ -295,31 +295,31 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 // Procedura okna
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
-    
+
 
     std::string portNR = std::to_string(LOWORD(wParam));
     std::wstring widestr = std::wstring(portNR.begin(), portNR.end());
     const wchar_t* widecstr = widestr.c_str();
 
     switch (msg) {
-    /*case WM_COMMANDDDD:
+        /*case WM_COMMANDDDD:
 
-        
 
-        MessageBox(hwnd, widecstr, L"Info", MB_OK);
-        /*if (LOWORD(wParam) == 200) {
-            if (SendMessage(GetDlgItem(hwnd, 101), BM_GETCHECK, 0, 0) == BST_CHECKED)
-                MessageBox(hwnd, L"Wybrano opcję 1", L"Info", MB_OK);
-            else if (SendMessage(GetDlgItem(hwnd, 102), BM_GETCHECK, 0, 0) == BST_CHECKED)
-                MessageBox(hwnd, L"Wybrano opcję 2", L"Info", MB_OK);
-            else if (SendMessage(GetDlgItem(hwnd, 103), BM_GETCHECK, 0, 0) == BST_CHECKED)
-                MessageBox(hwnd, L"Wybrano opcję 3", L"Info", MB_OK);
-        }
-        if (LOWORD(wParam) < 200 && LOWORD(wParam) > 100) {
-            portmanager.selectPort(LOWORD(wParam) - 101);
-            //MessageBox(hwnd, L"Wybrano opcję 3", L"Info", MB_OK);
-        }
-        break;*/
+
+            MessageBox(hwnd, widecstr, L"Info", MB_OK);
+            /*if (LOWORD(wParam) == 200) {
+                if (SendMessage(GetDlgItem(hwnd, 101), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                    MessageBox(hwnd, L"Wybrano opcję 1", L"Info", MB_OK);
+                else if (SendMessage(GetDlgItem(hwnd, 102), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                    MessageBox(hwnd, L"Wybrano opcję 2", L"Info", MB_OK);
+                else if (SendMessage(GetDlgItem(hwnd, 103), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                    MessageBox(hwnd, L"Wybrano opcję 3", L"Info", MB_OK);
+            }
+            if (LOWORD(wParam) < 200 && LOWORD(wParam) > 100) {
+                portmanager.selectPort(LOWORD(wParam) - 101);
+                //MessageBox(hwnd, L"Wybrano opcję 3", L"Info", MB_OK);
+            }
+            break;*/
 
 
     case WM_COMMAND: {
@@ -334,73 +334,82 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                     });
                 t.detach();  // uruchom jako wątek niezależny
             }
-        }
-        else if (SendMessage(GetDlgItem(hwnd, 204), BM_GETCHECK, 0, 0) == BST_CHECKED) {
-            std::thread t([hwnd]() {
-                BinaryModeReceiver binReceiver;
-                binReceiver.receiveBinaryToString(hwnd);
-                });
-            t.detach();
+            else if (SendMessage(GetDlgItem(hwnd, 204), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                std::thread t([hwnd]() {
+                    BinaryModeReceiver binReceiver;
+                    binReceiver.receiveBinaryToString(hwnd);
+                    });
+                t.detach();
+            }
+            else if (SendMessage(GetDlgItem(hwnd, 206), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                // Odbior tryb tekstowy - NOWE
+                std::thread t([hwnd]() {
+                    TextModeReceiver textReceiver;
+                    textReceiver.receiveTextToString(hwnd);
+                    });
+                t.detach();
+            }
         }
 
         if (id == 3005) {
-    wchar_t buffer[1024];
-    GetWindowTextW(GetDlgItem(hwnd, 3003), buffer, 1024);  // pobierz dane hex z pola
+            wchar_t buffer[1024];
+            GetWindowTextW(GetDlgItem(hwnd, 3003), buffer, 1024);  // pobierz dane hex z pola
 
-    // konwersja do std::string
-    std::wstring ws(buffer);
-    std::string hexInput(ws.begin(), ws.end());
+            // konwersja do std::string
+            std::wstring ws(buffer);
+            std::string hexInput(ws.begin(), ws.end());
 
-    // sprawdzenie checkboxa
-    bool addTerminator = (SendMessage(GetDlgItem(hwnd, 3004), BM_GETCHECK, 0, 0) == BST_CHECKED);
+            // sprawdzenie checkboxa
+            bool addTerminator = (SendMessage(GetDlgItem(hwnd, 3004), BM_GETCHECK, 0, 0) == BST_CHECKED);
 
-    Terminator* terminator = nullptr;
+            Terminator* terminator = nullptr;
 
-    if (addTerminator) {
-        if (SendMessage(GetDlgItem(hwnd, 301), BM_GETCHECK, 0, 0) == BST_CHECKED) {
-            terminator = new Terminator("\r");
+            if (addTerminator) {
+                if (SendMessage(GetDlgItem(hwnd, 301), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    terminator = new Terminator("\r");
+                }
+                else if (SendMessage(GetDlgItem(hwnd, 302), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    terminator = new Terminator("\n");
+                }
+                else if (SendMessage(GetDlgItem(hwnd, 303), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    terminator = new Terminator("\r\n");
+                }
+                else if (SendMessage(GetDlgItem(hwnd, 304), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    wchar_t buf[2];
+                    GetWindowTextW(GetDlgItem(hwnd, 305), buf, 2);
+                    std::wstring tmp(buf);
+                    std::string sequence(tmp.begin(), tmp.end());
+                    terminator = new Terminator("\r");
+                }
+            }
+
+            std::thread t([hexInput, addTerminator, terminator]() {
+                HANDLE handle = PortManager::getHandle();
+                if (handle == INVALID_HANDLE_VALUE) {
+                    std::cerr << "[sendBinaryGUI] Blad portu\n";
+                    return;
+                }
+
+                BinaryModeReceiver bmr;
+                std::vector<uint8_t> buffer = bmr.parseHexInput(hexInput);
+
+                if (addTerminator) {
+                    std::string tmp = terminator->get();
+                    for (char c : tmp) buffer.push_back(c);
+                }
+
+                DWORD bytesWritten;
+                BOOL result = WriteFile(handle, buffer.data(), buffer.size(), &bytesWritten, nullptr);
+
+                if (!result || bytesWritten != buffer.size()) {
+                    std::cerr << "[sendBinaryGUI] Blad wysylania: " << GetLastError() << "\n";
+                }
+                else {
+                    std::cout << "[TX] Wyslano " << bytesWritten << " bajtow binarnie z GUI\n";
+                }
+                });
+            t.detach();
         }
-        else if (SendMessage(GetDlgItem(hwnd, 302), BM_GETCHECK, 0, 0) == BST_CHECKED) {
-            terminator = new Terminator("\n");
-        }
-        else if (SendMessage(GetDlgItem(hwnd, 303), BM_GETCHECK, 0, 0) == BST_CHECKED) {
-            terminator = new Terminator("\r\n");
-        }
-        else if (SendMessage(GetDlgItem(hwnd, 304), BM_GETCHECK, 0, 0) == BST_CHECKED) {
-            wchar_t buf[2];
-            GetWindowTextW(GetDlgItem(hwnd, 305), buf, 2);
-            std::wstring tmp(buf);
-            std::string sequence(tmp.begin(), tmp.end());
-            terminator = new Terminator("\r");
-        }
-    }
-
-    std::thread t([hexInput, addTerminator, terminator]() {
-        HANDLE handle = PortManager::getHandle();
-        if (handle == INVALID_HANDLE_VALUE) {
-            std::cerr << "[sendBinaryGUI] Błąd portu\n";
-            return;
-        }
-
-        BinaryModeReceiver bmr;
-        std::vector<uint8_t> buffer = bmr.parseHexInput(hexInput);
-
-        if (addTerminator) {
-            std::string tmp = terminator->get();
-            for(char c : tmp) buffer.push_back(c);
-        }
-
-        DWORD bytesWritten;
-        BOOL result = WriteFile(handle, buffer.data(), buffer.size(), &bytesWritten, nullptr);
-
-        if (!result || bytesWritten != buffer.size()) {
-            std::cerr << "[sendBinaryGUI] Błąd wysyłania: " << GetLastError() << "\n";
-        } else {
-            std::cout << "[TX] Wysłano " << bytesWritten << " bajtów binarnie z GUI\n";
-        }
-    });
-    t.detach();
-}
 
         if (id > 100 && id < 200) {
             portmanager.selectPort(id - 101);
