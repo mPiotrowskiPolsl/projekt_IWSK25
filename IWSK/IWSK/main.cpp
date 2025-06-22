@@ -20,6 +20,12 @@
 Receiver receiver;        // obiekt odbiornika
 HWND hEdit2 = nullptr;    // uchwyt do pola tekstowego odbioru
 
+static HWND hEditBin = NULL;
+static WNDPROC OldEditProc = NULL;
+LRESULT CALLBACK HexEditProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#define BINARY_MODE_MAX_SIZE 1024
+WCHAR binaryEditBuffer[BINARY_MODE_MAX_SIZE]{};
+
 #define WM_UPDATE_TEXT (WM_USER + 1)
 // własny komunikat do aktualizacji tekstu
 std::wstring receivedText;            // przechowa tekst odebrany w tle
@@ -138,12 +144,18 @@ public:
         HWND hEdit = CreateWindowW(L"EDIT", L"",
             WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL |
             ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
-            10, 10, width / 2 - 20, 200,
+            10, 10, width / 3 - 20, 200,
             hwnd, (HMENU)3001, hInstance, NULL);
+        hEditBin = CreateWindowW(L"EDIT", L"",
+            WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL |
+            ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
+            width / 3 + 10, 10, width / 3 - 20, 200,
+            hwnd, (HMENU)3010, hInstance, NULL);
+        OldEditProc = (WNDPROC)SetWindowLongPtr(hEditBin, GWLP_WNDPROC, (LONG_PTR)HexEditProc);
         hEdit2 = CreateWindowW(L"EDIT", L"",
             WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL |
             ES_MULTILINE | ES_AUTOVSCROLL | ES_LEFT | ES_READONLY,
-            width / 2 + 10, 10, width / 2 - 20, 200,
+            2 * width / 3 + 10, 10, width / 3 - 20, 200,
             hwnd, (HMENU)3002, hInstance, NULL);
 
 
@@ -152,7 +164,7 @@ public:
             10, 500, 400, 25, hwnd, (HMENU)3003, hInstance, NULL);
 
 
-        CreateWindowW(L"BUTTON", L"Wyslij (tryb binarny)",
+        CreateWindowW(L"BUTTON", L"Wyslij",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
             630, 500, 140, 30, hwnd, (HMENU)3005, hInstance, NULL);
 
@@ -351,7 +363,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             }
         }
 
-        if (id == 3005) {
+        BOOL isBinaryModeSelected = SendMessage(GetDlgItem(hwnd, 203), BM_GETCHECK, 0, 0) == BST_CHECKED;
+        if (id == 3005 && isBinaryModeSelected) {
+            /*
             wchar_t buffer[1024];
             GetWindowTextW(GetDlgItem(hwnd, 3003), buffer, 1024);  // pobierz dane hex z pola
 
@@ -409,6 +423,44 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 }
                 });
             t.detach();
+            */
+
+            bool addTerminator = (SendMessage(GetDlgItem(hwnd, 3004), BM_GETCHECK, 0, 0) == BST_CHECKED);
+
+            Terminator* terminator = nullptr;
+
+            if (addTerminator) {
+                if (SendMessage(GetDlgItem(hwnd, 301), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    terminator = new Terminator("\r");
+                }
+                else if (SendMessage(GetDlgItem(hwnd, 302), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    terminator = new Terminator("\n");
+                }
+                else if (SendMessage(GetDlgItem(hwnd, 303), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    terminator = new Terminator("\r\n");
+                }
+                else if (SendMessage(GetDlgItem(hwnd, 304), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    wchar_t buf[2];
+                    GetWindowTextW(GetDlgItem(hwnd, 305), buf, 2);
+                    std::wstring tmp(buf);
+                    std::string sequence(tmp.begin(), tmp.end());
+                    terminator = new Terminator("\r");
+                }
+            }
+
+            GetWindowTextW(hEditBin, binaryEditBuffer, BINARY_MODE_MAX_SIZE);
+
+            BinaryModeSender binaryModeSender;
+            if (terminator)
+            {
+                binaryModeSender.sendFromHex(binaryEditBuffer, *terminator);
+            }
+            else
+            {
+                std::cerr << "Brak terminatora\n";
+            }
+
+            delete terminator;
         }
 
         if (id > 100 && id < 200) {
@@ -432,4 +484,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         break;
     }
     return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+
+
+LRESULT CALLBACK HexEditProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+    case WM_CHAR:
+        if ((wParam >= '0' && wParam <= '9') ||
+            (wParam >= 'a' && wParam <= 'f') ||
+            (wParam >= 'A' && wParam <= 'F') ||
+            wParam == VK_BACK || wParam == VK_DELETE || wParam == VK_RETURN || wParam == '\t') {
+            if (wParam >= 'a' && wParam <= 'f') {
+                wParam -= 32;
+            }
+            return CallWindowProc(OldEditProc, hwnd, msg, wParam, lParam);
+        }
+        // Beep or ignore invalid char
+        MessageBeep(MB_ICONWARNING);
+        return 0;
+    }
+    return CallWindowProc(OldEditProc, hwnd, msg, wParam, lParam);
 }

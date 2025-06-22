@@ -5,6 +5,9 @@
 #include <sstream>
 #include <iomanip>
 #include <fstream>
+#include <cwchar>
+#include <locale>
+#include <codecvt>
 
 BinaryModeSender::BinaryModeSender()
 {
@@ -79,4 +82,48 @@ void BinaryModeSender::sendFile(const std::string& filename, uint8_t terminator)
     std::cout << "Wczytano " << txBuffer.size() << " bajtów z pliku." << std::endl;
 
     sendWithTerminator(terminator);
+}
+
+void BinaryModeSender::sendFromHex(const WCHAR* hexInput, const Terminator& terminator)
+{
+    if (!hexInput) {
+        std::cerr << "Pusta tablica wejœciowa." << std::endl;
+        return;
+    }
+
+    std::wstring wstr(hexInput);
+
+    if (wstr.length() % 2 != 0) {
+        std::cerr << "Nieparzysta liczba znaków – nie mo¿na utworzyæ bajtów z hex." << std::endl;
+        return;
+    }
+
+    txBuffer.clear();
+
+    for (size_t i = 0; i < wstr.length(); i += 2) {
+        std::wstring hexByteStr = wstr.substr(i, 2);
+        try {
+            uint8_t byte = static_cast<uint8_t>(std::stoul(hexByteStr, nullptr, 16));
+            txBuffer.push_back(byte);
+        }
+        catch (...) {
+            std::wcerr << L"Nieprawid³owy bajt: " << hexByteStr << std::endl;
+        }
+    }
+
+    std::string term = terminator.get();
+    txBuffer.insert(txBuffer.end(), term.begin(), term.end());
+
+    if (handle == INVALID_HANDLE_VALUE) {
+        std::cerr << "Nieprawid³owy uchwyt portu." << std::endl;
+        return;
+    }
+
+    DWORD bytesWritten;
+    if (!WriteFile(handle, txBuffer.data(), static_cast<DWORD>(txBuffer.size()), &bytesWritten, nullptr)) {
+        std::cerr << "B³¹d przy wysy³aniu danych." << std::endl;
+    }
+    else {
+        std::cout << "Wys³ano " << bytesWritten << " bajtów." << std::endl;
+    }
 }
