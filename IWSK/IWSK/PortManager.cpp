@@ -71,17 +71,17 @@ bool PortManager::selectPort(int sel) {
             std::cout << i + 1 << ". " << ports[i] << std::endl;
         }
 
-        int choice;
+        /*int choice;
         std::cout << "Wybierz numer portu (1-" << ports.size() << "): ";
         std::cin >> choice;
 
         if (choice < 1 || choice > static_cast<int>(ports.size())) {
             std::cerr << "Nieprawidlowy wybor!" << std::endl;
             return false;
-        }
+        }*/
 
         //selectedPort = ports[choice - 1];
-        selectedPort = sel;
+        selectedPort = ports[sel];
 
         std::wstring widePort = L"\\\\.\\" + stringToWide(selectedPort);
         hPort = CreateFileW(widePort.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
