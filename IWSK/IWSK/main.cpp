@@ -4,6 +4,7 @@
 #include <chrono>
 #include <vector>
 #include <windows.h>
+#include <commdlg.h>
 
 #include "PortManager.h"          // Osoba 1
 #include "FlowControl.h"          // Osoba 2
@@ -169,7 +170,9 @@ public:
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
             630, 500, 140, 30, hwnd, (HMENU)3005, hInstance, NULL);
 
-
+        CreateWindowW(L"BUTTON", L"Wybierz i wyslij plik binarny",
+            WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+            490, 440, 280, 30, hwnd, (HMENU)3006, hInstance, NULL);
 
         //Lista Portów, odbywa sie w wndproc tak wlasciwie
         std::vector<std::string> ports;
@@ -463,6 +466,70 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             }
 
             delete terminator;
+        }
+
+        else if (id == 3006)
+        {
+            bool addTerminator = (SendMessage(GetDlgItem(hwnd, 3004), BM_GETCHECK, 0, 0) == BST_CHECKED);
+
+            Terminator* terminator = nullptr;
+
+            if (addTerminator) {
+                if (SendMessage(GetDlgItem(hwnd, 301), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    terminator = new Terminator("\r");
+                }
+                else if (SendMessage(GetDlgItem(hwnd, 302), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    terminator = new Terminator("\n");
+                }
+                else if (SendMessage(GetDlgItem(hwnd, 303), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    terminator = new Terminator("\r\n");
+                }
+                else if (SendMessage(GetDlgItem(hwnd, 304), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    wchar_t buf[2];
+                    GetWindowTextW(GetDlgItem(hwnd, 305), buf, 2);
+                    std::wstring tmp(buf);
+                    std::string sequence(tmp.begin(), tmp.end());
+                    terminator = new Terminator("\r");
+                }
+            }
+
+            if (terminator)
+            {
+                wchar_t szFile[260] = { 0 };
+
+                OPENFILENAME ofn;
+                ZeroMemory(&ofn, sizeof(ofn));
+
+                ofn.lStructSize = sizeof(ofn);
+                ofn.hwndOwner = NULL;
+                ofn.lpstrFile = szFile;
+                ofn.nMaxFile = sizeof(szFile);
+
+                ofn.lpstrFilter = L"Wszystkie pliki\0*.*\0";
+                ofn.nFilterIndex = 1;
+                ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+                if (GetOpenFileName(&ofn)) {
+                    BinaryModeSender binaryModeSender;
+                    if (binaryModeSender.readAndSendFile(hwnd, ofn.lpstrFile, *terminator))
+                    {
+                        std::wstring helper = L"Wyslano plik: ";
+                        helper += ofn.lpstrFile;
+                        MessageBox(hwnd, helper.c_str(), L"Info", MB_OK);
+                    }
+                    
+                }
+                else {
+                    MessageBox(hwnd, L"Anulowano", L"Info", MB_OK);
+                }
+
+                delete terminator;
+            }
+            else
+            {
+                std::cout << "brak terminatowora";
+            }
+           
         }
 
         if (id > 100 && id < 200) {

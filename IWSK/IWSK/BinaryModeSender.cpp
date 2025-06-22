@@ -8,6 +8,7 @@
 #include <cwchar>
 #include <locale>
 #include <codecvt>
+#include <vector>
 
 BinaryModeSender::BinaryModeSender()
 {
@@ -125,5 +126,47 @@ void BinaryModeSender::sendFromHex(const WCHAR* hexInput, const Terminator& term
     }
     else {
         std::cout << "Wys³ano " << bytesWritten << " bajtów." << std::endl;
+    }
+}
+
+bool BinaryModeSender::readAndSendFile(HWND hwnd, const wchar_t* filePath, const Terminator& terminator)
+{
+    std::ifstream plo(filePath, std::ios::binary);
+
+    if (!plo)
+    {
+        MessageBox(hwnd, L"Blad podczas otwarcia pliku", L"Info", MB_OK);
+    }
+
+    uint8_t character;
+
+    int counter;
+    
+    txBuffer.clear();
+
+    while (plo.read((char*)&character, sizeof(uint8_t)))
+    {
+        txBuffer.push_back(character);
+    }
+
+    std::string term = terminator.get();
+    txBuffer.insert(txBuffer.end(), term.begin(), term.end());
+
+    if (handle == INVALID_HANDLE_VALUE) {
+        MessageBox(hwnd, L"Nieprawidlowy uchwyt portu", L"Info", MB_OK);
+        return false;
+    }
+
+    DWORD bytesWritten;
+    if (!WriteFile(handle, txBuffer.data(), static_cast<DWORD>(txBuffer.size()), &bytesWritten, nullptr)) {
+        MessageBox(hwnd, L"Blad przy wysylaniu danych", L"Info", MB_OK);
+        return false;
+    }
+    else {
+        std::wstring helper = L"Wyslano ";
+        helper += std::to_wstring(bytesWritten) + L" bajtow";
+        MessageBox(hwnd, helper.c_str(), L"Info", MB_OK);
+
+        return true;
     }
 }
