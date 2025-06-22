@@ -34,6 +34,7 @@ std::wstring receivedText;            // przechowa tekst odebrany w tle
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 PortManager portmanager; //zmienna globalna :(
 
+BinaryModeReceiver binReceiver;
 class SerialCommunicationApp {
 public:
     int run(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -337,7 +338,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     case WM_COMMAND: {
         int id = LOWORD(wParam);
 
-        if (id == 200) {
+        if (id == 200) {//200 - przycisk sprawdz
             if (SendMessage(GetDlgItem(hwnd, 202), BM_GETCHECK, 0, 0) == BST_CHECKED) {
                 std::thread t([hwnd]() {
                     std::string result = receiver.receive();                         // odbiór danych
@@ -348,8 +349,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             }
             else if (SendMessage(GetDlgItem(hwnd, 204), BM_GETCHECK, 0, 0) == BST_CHECKED) {
                 std::thread t([hwnd]() {
-                    BinaryModeReceiver binReceiver;
-                    binReceiver.receiveBinaryToString(hwnd);
+                    //binReceiver;
+                    receivedText = binReceiver.receiveBinaryToString(hwnd);
+                    PostMessage(hwnd, WM_UPDATE_TEXT, 0, 0);
                     });
                 t.detach();
             }
