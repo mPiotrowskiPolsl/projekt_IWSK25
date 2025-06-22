@@ -455,10 +455,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
             GetWindowTextW(hEditBin, binaryEditBuffer, BINARY_MODE_MAX_SIZE);
 
-            BinaryModeSender binaryModeSender;
+            BinaryModeSender binaryModeSender(hwnd);
             if (terminator)
             {
-                binaryModeSender.sendFromHex(binaryEditBuffer, *terminator);
+                binaryModeSender.sendFromHex(hwnd, binaryEditBuffer, *terminator);
             }
             else
             {
@@ -510,7 +510,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
                 if (GetOpenFileName(&ofn)) {
-                    BinaryModeSender binaryModeSender;
+                    BinaryModeSender binaryModeSender(hwnd);
                     if (binaryModeSender.readAndSendFile(hwnd, ofn.lpstrFile, *terminator))
                     {
                         std::wstring helper = L"Wyslano plik: ";
