@@ -350,7 +350,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             else if (SendMessage(GetDlgItem(hwnd, 204), BM_GETCHECK, 0, 0) == BST_CHECKED) {
                 std::thread t([hwnd]() {
                     //binReceiver;
-                    receivedText = binReceiver.receiveBinaryToString(hwnd);
+                    receivedText = binReceiver.receiveBinaryToString();
                     PostMessage(hwnd, WM_UPDATE_TEXT, 0, 0);
                     });
                 t.detach();
