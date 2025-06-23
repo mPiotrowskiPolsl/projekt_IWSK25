@@ -326,6 +326,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     const wchar_t* widecstr = widestr.c_str();
 
     switch (msg) {
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hwnd, &ps);
+            const char* wej = "Wejscie";
+            const char* wejHex = "Wejscie hex";
+            const char* wyj = "Wyjscie";
+            TextOutA(hdc, 10, 215, wej, lstrlenA(wej)); // podpis pod wejsciem
+            TextOutA(hdc, 280, 215, wejHex, lstrlenA(wejHex)); // podpis pod wejsciem
+            TextOutA(hdc, 550, 215, wyj, lstrlenA(wyj)); // podpis pod wejsciem
+
+            EndPaint(hwnd, &ps);
+        }
+        return 0;
+        //break;
+
         /*case WM_COMMANDDDD:
 
 
