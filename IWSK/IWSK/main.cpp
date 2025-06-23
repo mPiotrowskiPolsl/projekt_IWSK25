@@ -162,9 +162,9 @@ public:
             hwnd, (HMENU)3002, hInstance, NULL);
 
 
-        CreateWindowW(L"EDIT", L"",
+        /*CreateWindowW(L"EDIT", L"",
             WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT,
-            10, 500, 400, 25, hwnd, (HMENU)3003, hInstance, NULL);
+            10, 500, 400, 25, hwnd, (HMENU)3003, hInstance, NULL);*/
 
 
         CreateWindowW(L"BUTTON", L"Wyslij",
@@ -362,7 +362,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             break;*/
 
 
-    case WM_COMMAND: {
+		case WM_COMMAND: {// obsługa komunikatów z przycisków i innych elementów GUI
         int id = LOWORD(wParam);
 
         if (id == 200) {//200 - przycisk sprawdz
@@ -391,7 +391,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 t.detach();
             }
         }
-        if (id == 207) {
+		if (id == 207) {//pingowanie
             std::thread t([hwnd]() {
                 while (SendMessage(GetDlgItem(hwnd, 207), BM_GETCHECK, 0, 0) == BST_CHECKED) {
                     if (SendMessage(GetDlgItem(hwnd, 401), BM_GETCHECK, 0, 0) == BST_CHECKED) {//przycisk ping, niech dziala tylko jak jest zaznaczony
@@ -408,24 +408,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             t.detach();
         }
         
-        if (id == 400) {//przycisk ping
-            std::thread t([hwnd]() {
-                while(SendMessage(GetDlgItem(hwnd, 207), BM_GETCHECK, 0, 0) == BST_CHECKED){
-                    
-                    Sleep(1000);
-                }
-                });
-            t.detach();
-            
-            
-        }
+       
         BOOL isBinaryModeSelected = SendMessage(GetDlgItem(hwnd, 203), BM_GETCHECK, 0, 0) == BST_CHECKED;
 
         bool isTextModeSelected = SendMessage(GetDlgItem(hwnd, 205), BM_GETCHECK, 0, 0) == BST_CHECKED;
         if (id == 3005 && isTextModeSelected) {
             wchar_t buffer[1024];
-            GetWindowTextW(GetDlgItem(hwnd, 3003), buffer, 1024);
-            SetWindowTextW(GetDlgItem(hwnd, 3001), buffer);
+            GetWindowTextW(GetDlgItem(hwnd, 3001), buffer, 1024);
+            //SetWindowTextW(GetDlgItem(hwnd, 3001), buffer);
 
             std::wstring ws(buffer);
             std::string inputText(ws.begin(), ws.end());
