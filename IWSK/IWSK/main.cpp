@@ -20,7 +20,7 @@ public:
     void run() {
         PortManager portManager;
         if (!portManager.selectPort()) {
-            std::cerr << "Brak dostêpnego portu!" << std::endl;
+            std::cerr << "Brak dostÄ™pnego portu!" << std::endl;
             return;
         }
         portManager.configureSpeed();
@@ -39,19 +39,21 @@ public:
 
         int choice;
         std::cout << "\n=== Menu opcji ===" << std::endl;
-        std::cout << "1. Odbiór w trybie standardowym" << std::endl;
-        std::cout << "2. Odbiór w trybie tekstowym" << std::endl;
+        std::cout << "1. OdbiÃ³r w trybie standardowym" << std::endl;
+        std::cout << "2. OdbiÃ³r w trybie tekstowym" << std::endl;
         std::cout << "3. Nadawanie w trybie tekstowym." << std::endl;
-        std::cout << "4. Odbiór w trybie binarnym" << std::endl;std::cout << "Wybierz opcjê: ";
+        std::cout << "4. OdbiÃ³r w trybie binarnym" << std::endl;
+        std::cout << "5. Nadawanie (Sender)" << std::endl;
+        std::cout << "Wybierz opcjÄ™: ";
         std::cin >> choice;
 
         if (choice == 1) {
-            // Standardowy odbiór
+            // Standardowy odbiÃ³r
             Receiver receiver;
             receiver.receive();
         }
         else if (choice == 2) {
-            // Odbiór w trybie tekstowym
+            // OdbiÃ³r w trybie tekstowym
             TextModeReceiver textReceiver;
             textReceiver.receiveText();
         }
@@ -74,8 +76,8 @@ public:
             std::cout << "\n--- Tryb binarny ---\n";
             std::cout << "1. Nadawanie z konsoli (hex)\n";
             std::cout << "2. Nadawanie z pliku\n";
-            std::cout << "3. Odbiór danych binarnych\n";
-            std::cout << "Twój wybór: ";
+            std::cout << "3. OdbiÃ³r danych binarnych\n";
+            std::cout << "TwÃ³j wybÃ³r: ";
             std::cin >> binChoice;
             std::cin.ignore();
 
@@ -84,7 +86,7 @@ public:
             }
             else if (binChoice == 2) {
                 std::string path;
-                std::cout << "Podaj nazwê pliku do wys³ania: ";
+                std::cout << "Podaj nazwÄ™ pliku do wysyÅ‚ania: ";
                 std::getline(std::cin, path);
                 binaryReceiver.sendFile(path);
             }
@@ -92,11 +94,31 @@ public:
                 binaryReceiver.receiveBinary();
             }
             else {
-                std::cout << "Nieprawid³owy wybór trybu binarnego.\n";
+                std::cout << "NieprawidÅ‚owy wybÃ³r trybu binarnego.\n";
             }
         }
-       else {
-            std::cout << "Nieprawid³owy wybór." << std::endl;
+        else if (choice == 5) {
+            std::cin.ignore(); // wyczyÅ›Ä‡ bufor
+            std::string data;
+            std::cout << "\n=== Nadawanie (Sender) ===" << std::endl;
+            std::cout << "WprowadÅº tekst do wysÅ‚ania: ";
+            std::getline(std::cin, data);
+
+            Terminator* terminator = chooseTerminator();
+            std::string terminatorText = terminator ? terminator->get() : "";
+
+            Sender sender;
+            sender.initialize(PortManager::getHandle());
+            bool ok = sender.send(data, terminatorText);
+            if (ok) {
+                std::cout << "[Sender] WysÅ‚ano dane poprawnie." << std::endl;
+            } else {
+                std::cout << "[Sender] WystÄ…piÅ‚ bÅ‚Ä…d podczas wysyÅ‚ania." << std::endl;
+            }
+            delete terminator;
+        }
+        else {
+            std::cout << "NieprawidÅ‚owy wybÃ³r." << std::endl;
         }
 
         /*Terminator terminator;
