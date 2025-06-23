@@ -169,7 +169,7 @@ public:
 
         CreateWindowW(L"BUTTON", L"Wyslij",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
-            630, 500, 140, 30, hwnd, (HMENU)3005, hInstance, NULL);
+            630, height - 80, 140, 30, hwnd, (HMENU)3005, hInstance, NULL);
 
         CreateWindowW(L"BUTTON", L"Wybierz i wyslij plik binarny",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
@@ -252,7 +252,7 @@ public:
             550, 370, 50, 25, hwnd, (HMENU)305, hInstance, NULL);
         //////
 
-        CreateWindowW(L"BUTTON", L"Sprawdz",
+        CreateWindowW(L"BUTTON", L"Odbierz",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
             10, height - 80, 100, 30, hwnd, (HMENU)200, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Wyswietlaj",
