@@ -59,6 +59,7 @@ std::vector<std::string> PortManager::getAvailablePorts() {
 }
 
 bool PortManager::selectPort(int sel) {
+	closePort(); // Zamknij poprzedni port, jesli jest otwarty
     try {
         auto ports = getAvailablePorts();
         if (ports.empty()) {

@@ -339,8 +339,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
             EndPaint(hwnd, &ps);
         }
-        return 0;
-        //break;
+        //return 0;
+        break;
 
         /*case WM_COMMANDDDD:
 
