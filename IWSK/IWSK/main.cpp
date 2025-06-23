@@ -143,6 +143,7 @@ public:
             CW_USEDEFAULT, CW_USEDEFAULT, 800, 600,
             NULL, NULL, hInstance, NULL
         );
+
         HWND hEdit = CreateWindowW(L"EDIT", L"",
             WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL |
             ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
@@ -369,62 +370,106 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
 
         BOOL isBinaryModeSelected = SendMessage(GetDlgItem(hwnd, 203), BM_GETCHECK, 0, 0) == BST_CHECKED;
-        if (id == 3005 && isBinaryModeSelected) {
-            /*
+
+        bool isTextModeSelected = SendMessage(GetDlgItem(hwnd, 205), BM_GETCHECK, 0, 0) == BST_CHECKED;
+        if (id == 3005 && isTextModeSelected) {
             wchar_t buffer[1024];
-            GetWindowTextW(GetDlgItem(hwnd, 3003), buffer, 1024);  // pobierz dane hex z pola
+            GetWindowTextW(GetDlgItem(hwnd, 3003), buffer, 1024);
+            SetWindowTextW(GetDlgItem(hwnd, 3001), buffer);
 
-            // konwersja do std::string
             std::wstring ws(buffer);
-            std::string hexInput(ws.begin(), ws.end());
+            std::string inputText(ws.begin(), ws.end());
 
-            // sprawdzenie checkboxa
             bool addTerminator = (SendMessage(GetDlgItem(hwnd, 3004), BM_GETCHECK, 0, 0) == BST_CHECKED);
-
-            Terminator* terminator = nullptr;
+            std::string terminator;
 
             if (addTerminator) {
-                if (SendMessage(GetDlgItem(hwnd, 301), BM_GETCHECK, 0, 0) == BST_CHECKED) {
-                    terminator = new Terminator("\r");
-                }
-                else if (SendMessage(GetDlgItem(hwnd, 302), BM_GETCHECK, 0, 0) == BST_CHECKED) {
-                    terminator = new Terminator("\n");
-                }
-                else if (SendMessage(GetDlgItem(hwnd, 303), BM_GETCHECK, 0, 0) == BST_CHECKED) {
-                    terminator = new Terminator("\r\n");
-                }
+                if (SendMessage(GetDlgItem(hwnd, 301), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                    terminator = "\r";
+                else if (SendMessage(GetDlgItem(hwnd, 302), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                    terminator = "\n";
+                else if (SendMessage(GetDlgItem(hwnd, 303), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                    terminator = "\r\n";
                 else if (SendMessage(GetDlgItem(hwnd, 304), BM_GETCHECK, 0, 0) == BST_CHECKED) {
-                    wchar_t buf[2];
-                    GetWindowTextW(GetDlgItem(hwnd, 305), buf, 2);
-                    std::wstring tmp(buf);
-                    std::string sequence(tmp.begin(), tmp.end());
-                    terminator = new Terminator("\r");
+                    wchar_t custom[3] = { 0 };
+                    GetWindowTextW(GetDlgItem(hwnd, 305), custom, 2);
+                    std::wstring wcustom(custom);
+                    terminator = std::string(wcustom.begin(), wcustom.end());
                 }
             }
 
-            std::thread t([hexInput, addTerminator, terminator]() {
+            std::thread t([inputText, terminator]() {
                 HANDLE handle = PortManager::getHandle();
                 if (handle == INVALID_HANDLE_VALUE) {
-                    std::cerr << "[sendBinaryGUI] Blad portu\n";
+                    std::cerr << "[TextModeSender] Blad portu\n";
+                    return;
+                }
+                TextModeSender sender;
+                sender.sendTextFromGUI(handle, inputText, terminator);
+                });
+            t.detach();
+        }
+
+        if (id == 3005 && isBinaryModeSelected) {
+            /*
+        if (id == 3005) {
+            (TextModeSender w WinApi)
+            wchar_t buffer[1024];
+            GetWindowTextW(GetDlgItem(hwnd, 3003), buffer, 1024);
+
+            SetWindowTextW(GetDlgItem(hwnd, 3001), buffer);
+
+            std::wstring ws(buffer);
+            std::string inputText(ws.begin(), ws.end());
+
+            // TERMINATOR
+            bool addTerminator = (SendMessage(GetDlgItem(hwnd, 3004), BM_GETCHECK, 0, 0) == BST_CHECKED);
+            std::string terminator;
+
+            if (addTerminator) {
+                if (SendMessage(GetDlgItem(hwnd, 301), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                    terminator = "\r";
+                else if (SendMessage(GetDlgItem(hwnd, 302), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                    terminator = "\n";
+                else if (SendMessage(GetDlgItem(hwnd, 303), BM_GETCHECK, 0, 0) == BST_CHECKED)
+                    terminator = "\r\n";
+                else if (SendMessage(GetDlgItem(hwnd, 304), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    wchar_t custom[3] = { 0 };
+                    GetWindowTextW(GetDlgItem(hwnd, 305), custom, 2);
+                    std::wstring wcustom(custom);
+                    terminator = std::string(wcustom.begin(), wcustom.end());
+                }
+            }
+
+            bool isBinary = (SendMessage(GetDlgItem(hwnd, 203), BM_GETCHECK, 0, 0) == BST_CHECKED);
+            bool isText = (SendMessage(GetDlgItem(hwnd, 205), BM_GETCHECK, 0, 0) == BST_CHECKED);
+
+            std::thread t([inputText, terminator, isBinary, isText]() {
+                HANDLE handle = PortManager::getHandle();
+                if (handle == INVALID_HANDLE_VALUE) {
+                    std::cerr << "[GUI Sender] Blad portu\n";
                     return;
                 }
 
-                BinaryModeReceiver bmr;
-                std::vector<uint8_t> buffer = bmr.parseHexInput(hexInput);
+                if (isBinary) {
+                    BinaryModeReceiver bmr;
+                    std::vector<uint8_t> buffer = bmr.parseHexInput(inputText);
+                    for (char c : terminator) buffer.push_back(c);
 
-                if (addTerminator) {
-                    std::string tmp = terminator->get();
-                    for (char c : tmp) buffer.push_back(c);
+                    DWORD bytesWritten;
+                    BOOL result = WriteFile(handle, buffer.data(), buffer.size(), &bytesWritten, nullptr);
+
+                    if (!result || bytesWritten != buffer.size())
+                        std::cerr << "[TX BIN] Blad wysylania: " << GetLastError() << "\n";
+                    else
+                        std::cout << "[TX BIN] Wyslano " << bytesWritten << " bajtow.\n";
                 }
-
-                DWORD bytesWritten;
-                BOOL result = WriteFile(handle, buffer.data(), buffer.size(), &bytesWritten, nullptr);
-
-                if (!result || bytesWritten != buffer.size()) {
-                    std::cerr << "[sendBinaryGUI] Blad wysylania: " << GetLastError() << "\n";
+                else if (isText) {
+                    TextModeSender sender;
+                    sender.sendTextFromGUI(handle, inputText, terminator);
                 }
                 else {
-                    std::cout << "[TX] Wyslano " << bytesWritten << " bajtow binarnie z GUI\n";
+                    std::cerr << "[GUI Sender] Nie wybrano trybu!\n";
                 }
                 });
             t.detach();
@@ -517,7 +562,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                         helper += ofn.lpstrFile;
                         MessageBox(hwnd, helper.c_str(), L"Info", MB_OK);
                     }
-                    
+
                 }
                 else {
                     MessageBox(hwnd, L"Anulowano", L"Info", MB_OK);
@@ -529,7 +574,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             {
                 std::cout << "brak terminatowora";
             }
-           
+
         }
 
         if (id > 100 && id < 200) {

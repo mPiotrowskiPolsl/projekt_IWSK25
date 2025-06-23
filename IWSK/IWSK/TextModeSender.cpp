@@ -1,26 +1,20 @@
 #include "TextModeSender.h"
+#include <windows.h>
 #include <iostream>
 
-void TextModeSender::setTerminator(const std::string& t) {
-    terminator = t;
-}
+TextModeSender::TextModeSender() {}
 
-void TextModeSender::sendText(HANDLE handle) {
-	if (handle == INVALID_HANDLE_VALUE) {
-		std::cerr << "[TextModeSender] Nieprawid³owy uchwyt portu COM!" << std::endl;
-		return;
-	}
-	std::string inputText;
+void TextModeSender::sendTextFromGUI(HANDLE handle, const std::string& message, const std::string& terminator) {
+    if (handle == INVALID_HANDLE_VALUE) {
+        std::cerr << "[TextModeSender] Nieprawidlowy uchwyt portu COM!" << std::endl;
+        return;
+    }
 
-	std::cout << "\n=== Tryb transmisji tekstowy - NADAWANIE ===" << std::endl;
+    std::string fullMessage = message + terminator;
 
-	//Wprowadzenie tekstu
-	std::cout << "WprowadŸ tekst do wys³ania" << std::endl;
-	//std::getline(std::cin, inputText);
-    std::cin >> inputText;
-
-    // 3. Prezentacja bufora
-    std::cout << "\n[Bufor] Tekst do wys³ania:\n" << inputText << std::endl;
+    // Log do konsoli
+    std::cout << "\n=== Tryb transmisji tekstowy - NADAWANIE (GUI) ===" << std::endl;
+    std::cout << "[Bufor] Tekst do wyslania:\n" << message << std::endl;
     std::cout << "[Bufor] Terminator: ";
     if (terminator.empty()) {
         std::cout << "(brak)";
@@ -34,32 +28,19 @@ void TextModeSender::sendText(HANDLE handle) {
     }
     std::cout << std::endl;
 
-    // 4. Potwierdzenie wysy³ki
-    std::string decision;
-    std::cout << "\nWpisz „wyslij”, aby nadaæ dane, lub cokolwiek innego, aby anulowaæ: ";
-    std::cin >> decision;
-    //std::getline(std::cin, decision);
-
-    if (decision != "wyslij") {
-        std::cout << "[TX] Anulowano nadawanie." << std::endl;
-        return;
-    }
-
-    // 5. Wysy³anie przez port
-    std::string fullMessage = inputText + terminator;
     DWORD bytesWritten;
     BOOL result = WriteFile(
         handle,
         fullMessage.c_str(),
         static_cast<DWORD>(fullMessage.size()),
         &bytesWritten,
-        NULL
+        nullptr
     );
 
     if (!result) {
-        std::cerr << "[TextModeSender] B³¹d podczas wysy³ania (kod: " << GetLastError() << ")" << std::endl;
+        std::cerr << "[TextModeSender] Blad podczas wysylania (kod: " << GetLastError() << ")" << std::endl;
     }
     else {
-        std::cout << "[TX] Wys³ano " << bytesWritten << " bajtów." << std::endl;
+        std::cout << "[TX] Wyslano " << bytesWritten << " bajtow." << std::endl;
     }
 }
