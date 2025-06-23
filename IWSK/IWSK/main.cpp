@@ -34,6 +34,14 @@ std::wstring receivedText;            // przechowa tekst odebrany w tle
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 PortManager portmanager; //zmienna globalna :(
+FlowControl* flowControl = nullptr;
+HWND hBtnDtrOn = NULL;
+HWND hBtnDtrOff = NULL;
+HWND hBtnRtsOn = NULL;
+HWND hBtnRtsOff = NULL;
+HWND hBtnDsr = NULL;
+HWND hBtnCts = NULL;
+
 
 BinaryModeReceiver binReceiver;
 class SerialCommunicationApp {
@@ -140,7 +148,7 @@ public:
             L"MyWindowClass",
             L"Moje Okno WinAPI",
             WS_OVERLAPPEDWINDOW,
-            CW_USEDEFAULT, CW_USEDEFAULT, 800, 600,
+            CW_USEDEFAULT, CW_USEDEFAULT, 900, 900,
             NULL, NULL, hInstance, NULL
         );
 
@@ -169,7 +177,7 @@ public:
 
         CreateWindowW(L"BUTTON", L"Wyslij",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
-            670, height - 80, 100, 30, hwnd, (HMENU)3005, hInstance, NULL);
+            780, height - 160, 100, 30, hwnd, (HMENU)3005, hInstance, NULL);
 
         CreateWindowW(L"BUTTON", L"Wybierz i wyslij plik binarny",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
@@ -259,6 +267,47 @@ public:
             WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
             250, 430, 100, 30, hwnd, (HMENU)401, hInstance, NULL);
 
+        
+        CreateWindowW(L"BUTTON", L"Brak kontroli przeplywu",
+            WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+            550, 480, 220, 30, hwnd, (HMENU)701, hInstance, NULL);
+
+        CreateWindowW(L"BUTTON", L"Sprzetowa kontrola przeplywu",
+            WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+            550, 520, 220, 30, hwnd, (HMENU)702, hInstance, NULL);
+
+        CreateWindowW(L"BUTTON", L"Programowa kontrola przeplywu",
+            WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+            550, 560, 220, 30, hwnd, (HMENU)703, hInstance, NULL);
+
+        CreateWindowW(L"BUTTON", L"Tryb reczny (DTR/RTS)",
+            WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+            550, 600, 220, 30, hwnd, (HMENU)704, hInstance, NULL);
+
+        
+        hBtnDtrOn = CreateWindowW(L"BUTTON", L"DTR ON",
+            WS_CHILD | WS_VISIBLE | WS_DISABLED,
+            550, 640, 100, 30, hwnd, (HMENU)705, hInstance, NULL);
+
+        hBtnDtrOff = CreateWindowW(L"BUTTON", L"DTR OFF",
+            WS_CHILD | WS_VISIBLE | WS_DISABLED,
+            670, 640, 100, 30, hwnd, (HMENU)706, hInstance, NULL);
+
+        hBtnRtsOn = CreateWindowW(L"BUTTON", L"RTS ON",
+            WS_CHILD | WS_VISIBLE | WS_DISABLED,
+            550, 680, 100, 30, hwnd, (HMENU)707, hInstance, NULL);
+
+        hBtnRtsOff = CreateWindowW(L"BUTTON", L"RTS OFF",
+            WS_CHILD | WS_VISIBLE | WS_DISABLED,
+            670, 680, 100, 30, hwnd, (HMENU)708, hInstance, NULL);
+
+        hBtnDsr = CreateWindowW(L"BUTTON", L"Sprawdz DSR",
+            WS_CHILD | WS_VISIBLE | WS_DISABLED,
+            550, 720, 100, 30, hwnd, (HMENU)709, hInstance, NULL);
+
+        hBtnCts = CreateWindowW(L"BUTTON", L"Sprawdz CTS",
+            WS_CHILD | WS_VISIBLE | WS_DISABLED,
+            670, 720, 100, 30, hwnd, (HMENU)710, hInstance, NULL);
 
         if (hwnd == NULL)
             return 0;
@@ -407,7 +456,67 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 });
             t.detach();
         }
-        
+        if (id == 701 && flowControl) {
+            flowControl->setMode('n');
+
+            EnableWindow(hBtnDtrOn, FALSE);
+            EnableWindow(hBtnDtrOff, FALSE);
+            EnableWindow(hBtnRtsOn, FALSE);
+            EnableWindow(hBtnRtsOff, FALSE);
+            EnableWindow(hBtnDsr, FALSE);
+            EnableWindow(hBtnCts, FALSE);
+        }
+        if (id == 702 && flowControl) {
+            flowControl->setMode('h');
+
+            EnableWindow(hBtnDtrOn, FALSE);
+            EnableWindow(hBtnDtrOff, FALSE);
+            EnableWindow(hBtnRtsOn, FALSE);
+            EnableWindow(hBtnRtsOff, FALSE);
+            EnableWindow(hBtnDsr, FALSE);
+            EnableWindow(hBtnCts, FALSE);
+        }
+        if (id == 703 && flowControl) {
+            flowControl->setMode('s');
+
+            EnableWindow(hBtnDtrOn, FALSE);
+            EnableWindow(hBtnDtrOff, FALSE);
+            EnableWindow(hBtnRtsOn, FALSE);
+            EnableWindow(hBtnRtsOff, FALSE);
+            EnableWindow(hBtnDsr, FALSE);
+            EnableWindow(hBtnCts, FALSE);
+        }
+        if (id == 704 && flowControl) {
+            flowControl->setMode('m');
+
+            EnableWindow(hBtnDtrOn, TRUE);
+            EnableWindow(hBtnDtrOff, TRUE);
+            EnableWindow(hBtnRtsOn, TRUE);
+            EnableWindow(hBtnRtsOff, TRUE);
+            EnableWindow(hBtnDsr, TRUE);
+            EnableWindow(hBtnCts, TRUE);
+        }
+
+        if (id == 705 && flowControl) {
+            flowControl->setDTR(true);
+        }
+        if (id == 706 && flowControl) {
+            flowControl->setDTR(false);
+        }
+        if (id == 707 && flowControl) {
+            flowControl->setRTS(true);
+        }
+        if (id == 708 && flowControl) {
+            flowControl->setRTS(false);
+        }
+        if (id == 709 && flowControl) {
+            bool dsr = flowControl->getDSR();
+            MessageBox(hwnd, dsr ? L"DSR: HIGH" : L"DSR: LOW", L"Stan DSR", MB_OK);
+        }
+        if (id == 710 && flowControl) {
+            bool cts = flowControl->getCTS();
+            MessageBox(hwnd, cts ? L"CTS: HIGH" : L"CTS: LOW", L"Stan CTS", MB_OK);
+        }
        
         BOOL isStandardModeSelected = SendMessage(GetDlgItem(hwnd, 201), BM_GETCHECK, 0, 0) == BST_CHECKED;
         BOOL isBinaryModeSelected = SendMessage(GetDlgItem(hwnd, 203), BM_GETCHECK, 0, 0) == BST_CHECKED;
@@ -593,7 +702,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
         if (id > 100 && id < 200) {
             portmanager.selectPort(id - 101);
+
+            if (flowControl) {
+                delete flowControl;
+                flowControl = nullptr;
+            }
+
+            std::string selectedPort = portmanager.getPort();
+            flowControl = new FlowControl(selectedPort);
         }
+        std::string selectedPort = portmanager.getPort();
+        flowControl = new FlowControl(selectedPort);
 
         break;
     }
@@ -608,6 +727,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
     case WM_DESTROY:
+        if (flowControl) {
+            delete flowControl;
+            flowControl = nullptr;
+        }
         PostQuitMessage(0);
         break;
     }

@@ -30,6 +30,11 @@ public:
     static int getDataBits() { return dataBits; }
     static char getParity() { return parity; }
     static int getStopBits() { return stopBits; }
+
+    static void setBaudRate(int baud) { baudRate = baud; configurePort(); }
+    static void setDataBits(int bits) { dataBits = bits; configurePort(); }
+    static void setParity(char p) { parity = p; configurePort(); }
+    static void setStopBits(int bits) { stopBits = bits; configurePort(); }
 };
 
 #endif

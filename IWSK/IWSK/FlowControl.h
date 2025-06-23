@@ -9,10 +9,19 @@ public:
     FlowControl(const std::string& portName);
     ~FlowControl();
 
-    void setup();          // Configure flow control mode
-    void manualFlow();     // Manual control of DTR/RTS
+    void setup();
+    void setMode(char mode);
+    void manualFlow();
 
     bool isManualMode() const;
+
+    bool writeData(const std::string& data);
+    std::string readData();
+
+    void setDTR(bool state);
+    void setRTS(bool state);
+    bool getDSR() const;
+    bool getCTS() const;
 
 private:
     enum class Mode { NONE, HARDWARE, SOFTWARE, MANUAL };
@@ -21,13 +30,9 @@ private:
     HANDLE serialHandle;
     std::string portName;
 
-    void enableHardwareFlowControl();  // RTS/CTS, DTR/DSR handshake
-    void enableSoftwareFlowControl();  // XON/XOFF
-
-    void setDTR(bool state);  // Set DTR signal manually
-    void setRTS(bool state);  // Set RTS signal manually
-    bool getDSR() const;      // Check DSR state
-    bool getCTS() const;      // Check CTS state
+    void enableHardwareFlowControl();
+    void enableSoftwareFlowControl();
+    
 };
 
 #endif // FLOWCONTROL_H

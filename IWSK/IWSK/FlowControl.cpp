@@ -24,8 +24,13 @@ void FlowControl::setup() {
         << "s - Software (XON/XOFF)\n"
         << "m - Manual\n"
         << "Choice: ";
+
     std::cin >> choice;
 
+    setMode(choice);
+}
+
+void FlowControl::setMode(char choice) {
     switch (choice) {
     case 'n':
         flowMode = Mode::NONE;
@@ -48,6 +53,7 @@ void FlowControl::setup() {
         flowMode = Mode::NONE;
     }
 }
+
 
 void FlowControl::enableHardwareFlowControl() {
     DCB dcbSerialParams = { 0 };
@@ -140,4 +146,29 @@ bool FlowControl::getCTS() const {
     }
     std::cerr << "Error reading CTS state" << std::endl;
     return false;
+}
+
+bool FlowControl::writeData(const std::string& data) {
+    if (serialHandle == INVALID_HANDLE_VALUE) return false;
+
+    DWORD bytesWritten;
+    if (!WriteFile(serialHandle, data.c_str(), data.size(), &bytesWritten, NULL)) {
+        std::cerr << "Error writing to serial port" << std::endl;
+        return false;
+    }
+    return bytesWritten == data.size();
+}
+
+std::string FlowControl::readData() {
+    if (serialHandle == INVALID_HANDLE_VALUE) return "";
+
+    char buffer[256];
+    DWORD bytesRead;
+    if (!ReadFile(serialHandle, buffer, sizeof(buffer) - 1, &bytesRead, NULL)) {
+        std::cerr << "Error reading from serial port" << std::endl;
+        return "";
+    }
+
+    buffer[bytesRead] = '\0';
+    return std::string(buffer);
 }
