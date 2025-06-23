@@ -223,6 +223,10 @@ public:
         CreateWindowW(L"BUTTON", L"Odbior tryb tekstowy",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
             150, 400, 220, 30, hwnd, (HMENU)206, hInstance, NULL);
+        CreateWindowW(L"BUTTON", L"Pingowanie",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            150, 430, 100, 30, hwnd, (HMENU)207, hInstance, NULL);
+
         //////
 
 
@@ -250,6 +254,9 @@ public:
         CreateWindowW(L"BUTTON", L"Sprawdz",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
             10, height - 80, 100, 30, hwnd, (HMENU)200, hInstance, NULL);
+        CreateWindowW(L"BUTTON", L"Wyswietlaj",
+            WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
+            250, 430, 100, 30, hwnd, (HMENU)401, hInstance, NULL);
 
 
         if (hwnd == NULL)
@@ -367,7 +374,34 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 t.detach();
             }
         }
-
+        if (id == 207) {
+            std::thread t([hwnd]() {
+                while (SendMessage(GetDlgItem(hwnd, 207), BM_GETCHECK, 0, 0) == BST_CHECKED) {
+                    if (SendMessage(GetDlgItem(hwnd, 401), BM_GETCHECK, 0, 0) == BST_CHECKED) {//przycisk ping, niech dziala tylko jak jest zaznaczony
+                        receivedText += PingChecker::ping(portmanager.getHandle()) + L"\n";
+                        PostMessage(hwnd, WM_UPDATE_TEXT, 0, 0);
+                         // wyjdz z petli, jesli nie jest zaznaczony
+                    }
+                    else {
+                        PingChecker::ping(portmanager.getHandle());
+                    }
+                    Sleep(1000); // odczekaj 1 sekunde przed kolejnym pingiem
+                }
+                });
+            t.detach();
+        }
+        
+        if (id == 400) {//przycisk ping
+            std::thread t([hwnd]() {
+                while(SendMessage(GetDlgItem(hwnd, 207), BM_GETCHECK, 0, 0) == BST_CHECKED){
+                    
+                    Sleep(1000);
+                }
+                });
+            t.detach();
+            
+            
+        }
         BOOL isBinaryModeSelected = SendMessage(GetDlgItem(hwnd, 203), BM_GETCHECK, 0, 0) == BST_CHECKED;
         if (id == 3005 && isBinaryModeSelected) {
             /*
