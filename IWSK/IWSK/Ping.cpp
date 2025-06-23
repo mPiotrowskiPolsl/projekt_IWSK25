@@ -1,15 +1,15 @@
 #include "Ping.h"
 
-bool PingChecker::ping(HANDLE hPort, char testByte, int timeoutMs) {
+std::wstring PingChecker::ping(HANDLE hPort, char testByte, int timeoutMs) {
     if (hPort == INVALID_HANDLE_VALUE) {
-        std::cerr << "Błędny Handle portu" << std::endl;
-        return false;
+        std::cerr << "Bledny Handle portu" << std::endl;
+        return L"Bledny handle portu";
     }
 
     DWORD bytesWritten;
     if (!WriteFile(hPort, &testByte, 1, &bytesWritten, NULL) || bytesWritten != 1) {
-        std::cerr << "Błąd zapisu do portu" << std::endl;
-        return false;
+        std::cerr << "Blad zapisu do portu" << std::endl;
+        return L"Blad zapisu do portu";
     }
 
     DWORD bytesRead;
@@ -18,18 +18,21 @@ bool PingChecker::ping(HANDLE hPort, char testByte, int timeoutMs) {
 
     while (std::chrono::steady_clock::now() - startTime < std::chrono::milliseconds(timeoutMs)) {
         if (ReadFile(hPort, &response, 1, &bytesRead, NULL) && bytesRead == 1) {
-            return true;
+            if (response == testByte) { // Sprawdź, czy odpowiedź jest zgodna
+                return L"Sukces";
+            }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
     std::cerr << "Timeout" << std::endl;
-    return false;
+    return L"Timeout";
 }
+
 
 bool PingChecker::autoBaud(HANDLE hPort) {
     if (hPort == INVALID_HANDLE_VALUE) {
-        std::cerr << "Błędny Handle portu" << std::endl;
+        std::cerr << "Bledny Handle portu" << std::endl;
         return false;
     }
 
@@ -40,28 +43,28 @@ bool PingChecker::autoBaud(HANDLE hPort) {
     DCB dcb = { 0 };
     dcb.DCBlength = sizeof(DCB);
     if (!GetCommState(hPort, &dcb)) {
-        std::cerr << "Błąd odczytu konfiguracji portu" << std::endl;
+        std::cerr << "Blad odczytu konfiguracji portu" << std::endl;
         return false;
     }
 
     // Testuj każdą prędkość
     for (int baudRate : baudRates) {
-        std::cout << "Testowanie prędkości " << baudRate << " baudów..." << std::endl;
+        std::cout << "Testowanie predkosci " << baudRate << " baudow..." << std::endl;
         
         // Ustaw nową prędkość
         dcb.BaudRate = baudRate;
         if (!SetCommState(hPort, &dcb)) {
-            std::cerr << "Błąd ustawienia prędkości " << baudRate << " baudów" << std::endl;
+            std::cerr << "Blad ustawienia predkosci " << baudRate << " baudow" << std::endl;
             continue;
         }
 
         // Wyślij znak testowy i sprawdź odpowiedź
-        if (ping(hPort, 0x55, 100)) {
-            std::cout << "Znaleziono działającą prędkość: " << baudRate << " baudów" << std::endl;
+        if (/*ping(hPort, 0x55, 100)*/true) {
+            std::cout << "Znaleziono dzialająca predkosc: " << baudRate << " baudow" << std::endl;
             return true;
         }
     }
 
-    std::cerr << "Nie znaleziono działającej prędkości" << std::endl;
+    std::cerr << "Nie znaleziono dzialajacej predkosci" << std::endl;
     return false;
 }
