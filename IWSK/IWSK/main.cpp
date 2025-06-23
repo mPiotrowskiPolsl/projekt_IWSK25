@@ -475,14 +475,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 }
             }
 
-            std::thread t([inputText, terminator]() {
+            std::thread t([hwnd, inputText, terminator]() {
                 HANDLE handle = PortManager::getHandle();
                 if (handle == INVALID_HANDLE_VALUE) {
                     std::cerr << "[TextModeSender] Blad portu\n";
                     return;
                 }
                 TextModeSender sender;
-                sender.sendTextFromGUI(handle, inputText, terminator);
+                std::wstring sendResult = sender.sendTextFromGUI(handle, inputText, terminator);
+                MessageBox(hwnd, sendResult.c_str(), L"Info", MB_OK);
             });
             t.detach();
         }

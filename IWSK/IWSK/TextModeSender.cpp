@@ -45,6 +45,6 @@ std::wstring TextModeSender::sendTextFromGUI(HANDLE handle, const std::string& m
     else {
         std::cout << "[TX] Wyslano " << bytesWritten << " bajtow." << std::endl;
 		std::wstring bytesWrittenStr = std::to_wstring(bytesWritten);
-        return L"[TX] Wyslano " + bytesWrittenStr + L"bajtow.";
+        return L"[TX] Wyslano " + bytesWrittenStr + L" bajtow.";
     }
 }
