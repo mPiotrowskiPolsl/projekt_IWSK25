@@ -4,10 +4,10 @@
 
 TextModeSender::TextModeSender() {}
 
-void TextModeSender::sendTextFromGUI(HANDLE handle, const std::string& message, const std::string& terminator) {
+std::wstring TextModeSender::sendTextFromGUI(HANDLE handle, const std::string& message, const std::string& terminator) {
     if (handle == INVALID_HANDLE_VALUE) {
         std::cerr << "[TextModeSender] Nieprawidlowy uchwyt portu COM!" << std::endl;
-        return;
+        return L"[TextModeSender] Nieprawidlowy uchwyt portu COM!";
     }
 
     std::string fullMessage = message + terminator;
@@ -38,9 +38,13 @@ void TextModeSender::sendTextFromGUI(HANDLE handle, const std::string& message, 
     );
 
     if (!result) {
+        
         std::cerr << "[TextModeSender] Blad podczas wysylania (kod: " << GetLastError() << ")" << std::endl;
+		return L"[TextModeSender] Blad podczas wysylania (kod: " + std::to_wstring(GetLastError()) + L")";
     }
     else {
         std::cout << "[TX] Wyslano " << bytesWritten << " bajtow." << std::endl;
+		std::wstring bytesWrittenStr = std::to_wstring(bytesWritten);
+        return L"[TX] Wyslano " + bytesWrittenStr + L"bajtow.";
     }
 }
