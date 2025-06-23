@@ -158,7 +158,7 @@ public:
         hEdit2 = CreateWindowW(L"EDIT", L"",
             WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL |
             ES_MULTILINE | ES_AUTOVSCROLL | ES_LEFT | ES_READONLY,
-            2 * width / 3 + 10, 10, width / 3 - 20, 200,
+            2 * width / 3 + 10, 10, width / 3 - 30, 200,
             hwnd, (HMENU)3002, hInstance, NULL);
 
 
