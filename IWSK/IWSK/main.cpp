@@ -146,7 +146,7 @@ public:
         HWND hwnd = CreateWindowEx(
             0,
             L"MyWindowClass",
-            L"Moje Okno WinAPI",
+            L"Komunikacja rs232",
             WS_OVERLAPPEDWINDOW,
             CW_USEDEFAULT, CW_USEDEFAULT, width, height,
             NULL, NULL, hInstance, NULL
