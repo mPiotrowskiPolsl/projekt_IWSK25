@@ -3,8 +3,9 @@
 #include <thread>
 #include <chrono>
 
-FlowControl::FlowControl(const std::string& port) : portName(port), flowMode(Mode::NONE) {
-    serialHandle = CreateFileA(portName.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+FlowControl::FlowControl(const std::string& port, HANDLE handle) : portName(port), flowMode(Mode::NONE) {
+    serialHandle = handle;
+    
     if (serialHandle == INVALID_HANDLE_VALUE) {
         std::cerr << "Failed to open serial port: " << portName << std::endl;
     }
@@ -12,7 +13,7 @@ FlowControl::FlowControl(const std::string& port) : portName(port), flowMode(Mod
 
 FlowControl::~FlowControl() {
     if (serialHandle != INVALID_HANDLE_VALUE) {
-        CloseHandle(serialHandle);
+        //CloseHandle(serialHandle);
     }
 }
 

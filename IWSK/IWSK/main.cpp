@@ -714,10 +714,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             }
 
             std::string selectedPort = portmanager.getPort();
-            flowControl = new FlowControl(selectedPort);
+            flowControl = new FlowControl(selectedPort, portmanager.getHandle());
         }
         std::string selectedPort = portmanager.getPort();
-        flowControl = new FlowControl(selectedPort);
+        flowControl = new FlowControl(selectedPort, portmanager.getHandle());
 
         break;
     }

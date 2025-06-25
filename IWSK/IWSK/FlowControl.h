@@ -6,7 +6,7 @@
 
 class FlowControl {
 public:
-    FlowControl(const std::string& portName);
+    FlowControl(const std::string& portName, HANDLE handle);
     ~FlowControl();
 
     void setup();
