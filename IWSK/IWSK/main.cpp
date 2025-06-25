@@ -194,6 +194,14 @@ public:
             MessageBox(hwnd, L"Brak dostepu do rej systemowego", L"Info", MB_OK);
             //tu ma byc normalnie wiadomosc z wyjatku |todo
         }
+
+        int controlsY = 280;
+		int portsYStep = 30;
+		int portsX = 20;
+        HWND hGroup = CreateWindowEx(0, L"BUTTON", L"Port",
+            WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+            portsX-1, controlsY-20, 103, 350/*ports.size()*portsYStep+30*/, hwnd, NULL, hInstance, NULL);
+
         for (int i = 0; i < ports.size(); i++) {
             std::wstring widestr = std::wstring(ports[i].begin(), ports[i].end());
             const wchar_t* widecstr = widestr.c_str();
@@ -201,64 +209,73 @@ public:
             if (i == 0) {
                 CreateWindowW(L"BUTTON", widecstr,
                     WS_CHILD | WS_VISIBLE | WS_GROUP | BS_AUTORADIOBUTTON,
-                    20, 250 + i * 40, 100, 30, hwnd, (HMENU)id, hInstance, NULL);
+                    portsX, controlsY + i * portsYStep, 100, 30, hwnd, (HMENU)id, hInstance, NULL);
                 //pierwszy element z WS_GROUP
             }
             else {
                 CreateWindowW(L"BUTTON", widecstr,
                     WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-                    20, 250 + i * 40, 100, 30, hwnd, (HMENU)id, hInstance, NULL);
+                    portsX, controlsY + i * portsYStep, 100, 30, hwnd, (HMENU)id, hInstance, NULL);
             }
 
         }
         //////
-        int controlsY = 250;
+        
         int transSelectionYStep = 30;
+        int transSelectionX = 125;
         //Wybór trybu transmisji
+        HWND hGroup2 = CreateWindowEx(0, L"BUTTON", L"Tryb transmisji",
+            WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+            transSelectionX - 1, controlsY - 20, 223, 350/*ports.size()*portsYStep+30*/, hwnd, NULL, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Nadawanie tryb standardowy",
             WS_CHILD | WS_VISIBLE | WS_GROUP | BS_AUTORADIOBUTTON,
-            120, controlsY + transSelectionYStep * 0, 220, 30, hwnd, (HMENU)201, hInstance, NULL);
+            transSelectionX, controlsY + transSelectionYStep * 0, 220, 30, hwnd, (HMENU)201, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Odbior tryb standardowy",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            120, controlsY + transSelectionYStep * 1, 220, 30, hwnd, (HMENU)202, hInstance, NULL);
+            transSelectionX, controlsY + transSelectionYStep * 1, 220, 30, hwnd, (HMENU)202, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Nadawanie tryb binarny",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            120, controlsY + transSelectionYStep * 2, 220, 30, hwnd, (HMENU)203, hInstance, NULL);
+            transSelectionX, controlsY + transSelectionYStep * 2, 220, 30, hwnd, (HMENU)203, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Odbior tryb binarny",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            120, controlsY + transSelectionYStep * 3, 220, 30, hwnd, (HMENU)204, hInstance, NULL);
+            transSelectionX, controlsY + transSelectionYStep * 3, 220, 30, hwnd, (HMENU)204, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Nadawanie tryb tekstowy",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            120, controlsY + transSelectionYStep * 4, 220, 30, hwnd, (HMENU)205, hInstance, NULL);
+            transSelectionX, controlsY + transSelectionYStep * 4, 220, 30, hwnd, (HMENU)205, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Odbior tryb tekstowy",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            120, controlsY + transSelectionYStep * 5, 220, 30, hwnd, (HMENU)206, hInstance, NULL);
+            transSelectionX, controlsY + transSelectionYStep * 5, 220, 30, hwnd, (HMENU)206, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Pingowanie",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            120, controlsY + transSelectionYStep * 6, 100, 30, hwnd, (HMENU)207, hInstance, NULL);
+            transSelectionX, controlsY + transSelectionYStep * 6, 100, 30, hwnd, (HMENU)207, hInstance, NULL);
 
         //////
 
-
+		int terminatorYStep = 30;
+        int terminatorX = 350;
         //Wybór terminatora
+        HWND hGroup3 = CreateWindowEx(0, L"BUTTON", L"Wybor terminatora",
+            WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+            terminatorX - 1, controlsY - 20, 203, 350/*ports.size()*portsYStep+30*/, hwnd, NULL, hInstance, NULL);
+
         CreateWindowW(L"BUTTON", L"Dodaj terminator",
             WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
-            340, 250, 150, 30, hwnd, (HMENU)3004, hInstance, NULL);
+            terminatorX, controlsY + terminatorYStep * 0, 150, 30, hwnd, (HMENU)3004, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"CR",
             WS_CHILD | WS_VISIBLE | WS_GROUP | BS_AUTORADIOBUTTON,
-            340, 280, 150, 30, hwnd, (HMENU)301, hInstance, NULL);
+            terminatorX, controlsY + terminatorYStep * 1, 150, 30, hwnd, (HMENU)301, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"LF",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            340, 310, 150, 30, hwnd, (HMENU)302, hInstance, NULL);
+            terminatorX, controlsY + terminatorYStep * 2, 150, 30, hwnd, (HMENU)302, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"CR-LF",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            340, 340, 150, 30, hwnd, (HMENU)303, hInstance, NULL);
+            terminatorX, controlsY + terminatorYStep * 3, 150, 30, hwnd, (HMENU)303, hInstance, NULL);
         CreateWindowW(L"BUTTON", L"Niestandardowy:",
             WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            340, 370, 150, 30, hwnd, (HMENU)304, hInstance, NULL);
+            terminatorX, controlsY + terminatorYStep * 4, 150, 30, hwnd, (HMENU)304, hInstance, NULL);
         CreateWindowW(L"EDIT", L"",
             WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT,
-            490, 370, 50, 25, hwnd, (HMENU)305, hInstance, NULL);
+            terminatorX+150, controlsY + terminatorYStep * 4, 50, 25, hwnd, (HMENU)305, hInstance, NULL);
         //////
 
         CreateWindowW(L"BUTTON", L"Odbierz",
@@ -269,9 +286,12 @@ public:
             220, controlsY + transSelectionYStep * 6, 100, 30, hwnd, (HMENU)401, hInstance, NULL);
 
         //kontrola przeplywu
-		int flowControlX = 600;
+		int flowControlX = 555;
 		
 		int flowControlYStep = 40;
+        HWND hGroup4 = CreateWindowEx(0, L"BUTTON", L"Kontrola Przeplywu",
+            WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+            flowControlX - 1, controlsY - 20, 223, 350/*ports.size()*portsYStep+30*/, hwnd, NULL, hInstance, NULL);
 
         CreateWindowW(L"BUTTON", L"Brak kontroli przeplywu",
             WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
