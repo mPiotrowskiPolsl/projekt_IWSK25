@@ -141,7 +141,7 @@ public:
         wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 
         RegisterClass(&wc);
-        int width = 900;
+        int width = 1100;
         int height = 700;
         HWND hwnd = CreateWindowEx(
             0,
