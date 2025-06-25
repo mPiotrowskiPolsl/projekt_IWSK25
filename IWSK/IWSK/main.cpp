@@ -334,6 +334,18 @@ public:
             WS_CHILD | WS_VISIBLE | WS_DISABLED,
             flowControlX+120, controlsY + flowControlYStep * 6, 100, 30, hwnd, (HMENU)710, hInstance, NULL);
 
+
+
+
+        //Parametry transmiji
+		int transmissionParamsX = 780;
+        HWND hGroup5 = CreateWindowEx(0, L"BUTTON", L"Parametry transmisji",
+            WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+            transmissionParamsX - 1, controlsY - 20, 283, 350/*ports.size()*portsYStep+30*/, hwnd, NULL, hInstance, NULL);
+        //TODO
+
+
+
         if (hwnd == NULL)
             return 0;
 
