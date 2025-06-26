@@ -69,11 +69,11 @@ std::wstring TextModeReceiver::receiveTextToString(HWND hwnd) {
     char buffer[BUFFER_SIZE];
     DWORD bytesRead;
 
-    while (true) {
+    //while (true) {
         BOOL success = ReadFile(handle, buffer, sizeof(buffer) - 1, &bytesRead, nullptr);
         if (!success) {
             resultText += L"\nBłąd odczytu.\n";
-            break;
+            //break;
         }
 
         if (bytesRead > 0) {
@@ -90,7 +90,7 @@ std::wstring TextModeReceiver::receiveTextToString(HWND hwnd) {
         }
 
         Sleep(100);
-    }
+    //}
 
     return resultText;
 }

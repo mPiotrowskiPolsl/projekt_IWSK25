@@ -337,12 +337,77 @@ public:
 
 
 
-        //Parametry transmiji
-		int transmissionParamsX = 780;
+  //      //Parametry transmiji
+		//int transmissionParamsX = 780;
+  //      HWND hGroup5 = CreateWindowEx(0, L"BUTTON", L"Parametry transmisji",
+  //          WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+  //          transmissionParamsX - 1, controlsY - 20, 283, 350/*ports.size()*portsYStep+30*/, hwnd, NULL, hInstance, NULL);
+  //      //TODO
+        // Parametry transmisji - DODANE KONTROLKI
+        int transmissionParamsX = 780;
+        int paramY = controlsY;
         HWND hGroup5 = CreateWindowEx(0, L"BUTTON", L"Parametry transmisji",
             WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-            transmissionParamsX - 1, controlsY - 20, 283, 350/*ports.size()*portsYStep+30*/, hwnd, NULL, hInstance, NULL);
-        //TODO
+            transmissionParamsX - 1, controlsY - 20, 283, 350, hwnd, NULL, hInstance, NULL);
+
+        // Prędkość transmisji
+        CreateWindowW(L"STATIC", L"Predkosc:",
+            WS_CHILD | WS_VISIBLE,
+            transmissionParamsX, paramY, 100, 20, hwnd, NULL, hInstance, NULL);
+        HWND hComboBaud = CreateWindowW(L"COMBOBOX", NULL,
+            WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_TABSTOP,
+            transmissionParamsX + 100, paramY, 150, 200, hwnd, (HMENU)501, hInstance, NULL);
+
+        // Wypełnij ComboBox prędkościami
+        std::vector<int> baudRates = { 150, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200 };
+        for (int rate : baudRates) {
+            std::wstring text = std::to_wstring(rate);
+            SendMessage(hComboBaud, CB_ADDSTRING, 0, (LPARAM)text.c_str());
+        }
+        SendMessage(hComboBaud, CB_SETCURSEL, 6, 0); // Domyślnie 9600
+
+        // Bity danych
+        paramY += 30;
+        CreateWindowW(L"STATIC", L"Bity danych:",
+            WS_CHILD | WS_VISIBLE,
+            transmissionParamsX, paramY, 100, 20, hwnd, NULL, hInstance, NULL);
+        HWND hRadioData7 = CreateWindowW(L"BUTTON", L"7",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            transmissionParamsX + 100, paramY, 50, 20, hwnd, (HMENU)502, hInstance, NULL);
+        HWND hRadioData8 = CreateWindowW(L"BUTTON", L"8",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            transmissionParamsX + 160, paramY, 50, 20, hwnd, (HMENU)503, hInstance, NULL);
+        SendMessage(hRadioData8, BM_SETCHECK, BST_CHECKED, 0); // Domyślnie 8 bitów
+
+        // Parzystość
+        paramY += 30;
+        CreateWindowW(L"STATIC", L"Parzystosc:",
+            WS_CHILD | WS_VISIBLE,
+            transmissionParamsX, paramY, 100, 20, hwnd, NULL, hInstance, NULL);
+        HWND hRadioParityN = CreateWindowW(L"BUTTON", L"N",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
+            transmissionParamsX + 100, paramY, 50, 20, hwnd, (HMENU)504, hInstance, NULL);
+        HWND hRadioParityE = CreateWindowW(L"BUTTON", L"E",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            transmissionParamsX + 160, paramY, 50, 20, hwnd, (HMENU)505, hInstance, NULL);
+        HWND hRadioParityO = CreateWindowW(L"BUTTON", L"O",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            transmissionParamsX + 220, paramY, 50, 20, hwnd, (HMENU)506, hInstance, NULL);
+        SendMessage(hRadioParityN, BM_SETCHECK, BST_CHECKED, 0); // Domyślnie N
+
+        // Bity stopu
+        paramY += 30;
+        CreateWindowW(L"STATIC", L"Bity stopu:",
+            WS_CHILD | WS_VISIBLE,
+            transmissionParamsX, paramY, 100, 20, hwnd, NULL, hInstance, NULL);
+        HWND hRadioStop1 = CreateWindowW(L"BUTTON", L"1",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
+            transmissionParamsX + 100, paramY, 50, 20, hwnd, (HMENU)507, hInstance, NULL);
+        HWND hRadioStop2 = CreateWindowW(L"BUTTON", L"2",
+            WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            transmissionParamsX + 160, paramY, 50, 20, hwnd, (HMENU)508, hInstance, NULL);
+        SendMessage(hRadioStop1, BM_SETCHECK, BST_CHECKED, 0); // Domyślnie 1 bit
+
 
 
 
@@ -425,8 +490,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
             EndPaint(hwnd, &ps);
         }
-        return 0;
-        //break;
+        //return 0;
+        break;
 
         /*case WM_COMMANDDDD:
 
@@ -750,6 +815,53 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         std::string selectedPort = portmanager.getPort();
         flowControl = new FlowControl(selectedPort, portmanager.getHandle());
+
+
+        // Obsługa parametrów transmisji - DODANE
+        if (id == 501 && HIWORD(wParam) == CBN_SELCHANGE) { // Baud rate
+            HWND hCombo = GetDlgItem(hwnd, 501);
+            int idx = SendMessage(hCombo, CB_GETCURSEL, 0, 0);
+            if (idx != CB_ERR) {
+                int baud = 0;
+                switch (idx) {
+                case 0: baud = 150; break;
+                case 1: baud = 300; break;
+                case 2: baud = 600; break;
+                case 3: baud = 1200; break;
+                case 4: baud = 2400; break;
+                case 5: baud = 4800; break;
+                case 6: baud = 9600; break;
+                case 7: baud = 19200; break;
+                case 8: baud = 38400; break;
+                case 9: baud = 57600; break;
+                case 10: baud = 115200; break;
+                }
+                portmanager.setBaudRate(baud);
+            }
+        }
+        else if (id == 502) { // 7 bitów danych
+            portmanager.setDataBits(7);
+        }
+        else if (id == 503) { // 8 bitów danych
+            portmanager.setDataBits(8);
+        }
+        else if (id == 504) { // Parzystość N
+            portmanager.setParity('N');
+        }
+        else if (id == 505) { // Parzystość E
+            portmanager.setParity('E');
+        }
+        else if (id == 506) { // Parzystość O
+            portmanager.setParity('O');
+        }
+        else if (id == 507) { // 1 bit stopu
+            portmanager.setStopBits(1);
+        }
+        else if (id == 508) { // 2 bity stopu
+            portmanager.setStopBits(2);
+        }
+
+
 
         break;
     }
